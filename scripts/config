@@ -1,0 +1,70 @@
+#!/bin/bash
+
+if [[ "X" == "$1X" ]]; then
+  echo "Usage: source config [scripts-dir]"
+  return 1
+fi
+
+SCRIPTS_HOME=$1
+
+#################################################
+# SET THE CKAN DATABASE PASSWORD
+# SET THE CKAN_BACKEND_SERVER ip address or name
+# Edit the setting below.
+#################################################
+CKAN_DATABASE_PASSWORD=
+CKAN_BACKEND_SERVER=0.0.0.0
+
+if [[ "X" == "X$CKAN_DATABASE_PASSWORD" ]] ; then
+  echo '***'
+  echo "*** ERROR: Please set CKAN_DATABASE_PASSWORD in $SCRIPTS_HOME/config"
+  echo '***'
+  echo
+  return 1
+fi
+
+if [[ "X" == "X$CKAN_BACKEND_SERVER" ]] ; then
+  echo '***'
+  echo "*** ERROR: Please set CKAN_BACKEND_SERVER in $SCRIPTS_HOME/config"
+  echo '***'
+  echo
+  return 1
+fi
+
+CKAN_INSTANCE=uat
+CKAN_DOMAIN=uat.ecportal.ckan.org
+CKAN_APPLICATION=/applications/ckan/users/system
+CKAN_VERSION="release-v1.7"
+
+if [[ ! $CKAN_INSTANCE ]]; then
+  echo 'CKAN_INSTANCE variable not defined' 1>&2
+  return 1
+fi
+
+if [[ ! $CKAN_DOMAIN ]]; then
+  echo 'CKAN_DOMAIN variable not defined' 1>&2
+  return 1
+fi
+
+if [[ ! $CKAN_APPLICATION ]]; then
+  echo 'CKAN_APPLICATION variable not defined' 1>&2
+  return 1
+fi
+
+CKAN_INSTALL_DIR=$CKAN_APPLICATION/ckan/lib
+CKAN_LIB=$CKAN_INSTALL_DIR
+CKAN_ETC=$CKAN_APPLICATION/ckan/etc
+CKAN_HOME="$CKAN_INSTALL_DIR/$CKAN_INSTANCE"
+PYENV="$CKAN_HOME/pyenv"
+
+echo '------------------------------------------'
+echo 'Configured with the following options...  '
+echo
+echo "CKAN_APPLICATION: $CKAN_APPLICATION"
+echo "CKAN_HOME:        $CKAN_HOME"
+echo "CKAN_INSTANCE:    $CKAN_INSTANCE"
+echo "CKAN_DOMAIN:      $CKAN_DOMAIN"
+echo "SCRIPTS_HOME:     $SCRIPTS_HOME"
+echo
+echo '------------------------------------------'
+
