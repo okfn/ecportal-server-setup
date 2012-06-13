@@ -93,4 +93,6 @@ install_solr () {
   # Ensure solr is started on boot.
   chkconfig tomcat6 on --level 345
   chkconfig --list tomcat6
+
+  cd "$PREV_DIR"
 }
