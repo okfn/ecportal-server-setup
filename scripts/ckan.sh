@@ -223,18 +223,6 @@ ckan.tracking_enabled = true\\
 
 
   echo '------------------------------------------'
-  echo 'Applying cheeky ckan patches'
-  echo '------------------------------------------'
-
-  OLD_DIR=$PWD
-  cd "$PYENV/src/ckan"
-  git apply "$OLD_DIR/ckan.patch"
-  git apply "$OLD_DIR/elastic_search_redirect.patch"
-  sudo /etc/init.d/httpd restart
-  cd "$OLD_DIR"
-
-  
-  echo '------------------------------------------'
   echo 'Running internal analytics tracking command'
   echo '------------------------------------------'
   Old_DIR=$PWD
