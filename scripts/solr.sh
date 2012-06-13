@@ -68,7 +68,7 @@ install_solr () {
   
   # start the server
   $CKAN_APPLICATION/init.d/tomcat6 restart
-  sleep 3
+  sleep 5
   # Check the installation...
   curl http://${CKAN_BACKEND_SERVER}:8983/solr/admin/ping
 
@@ -87,11 +87,10 @@ install_solr () {
   
   cp /tmp/ckan.$now/ckanext/multilingual/solr/* $SOLR_PRODUCT/solr/conf/
   /etc/init.d/tomcat6 restart
-  sleep 3
+  sleep 5
   curl http://${CKAN_BACKEND_SERVER}:8983/solr/admin/ping
 
   # Ensure solr is started on boot.
   chkconfig tomcat6 on --level 345
   chkconfig --list tomcat6
-
 }

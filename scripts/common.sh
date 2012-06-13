@@ -24,7 +24,6 @@ ckan_set_log_file_permissions () {
 }
 
 ckan_ensure_users_and_groups () {
-
     local INSTANCE
     INSTANCE=$1
     COMMAND_OUTPUT=`cat /etc/group | grep "ckan${INSTANCE}:"`

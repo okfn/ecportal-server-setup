@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script must be run as root.
 if [[ $EUID -ne 0 ]]; then
@@ -17,7 +17,6 @@ fi
 
 source common_step1.sh
 
-# Install nginx
 source nginx.sh
 install_nginx
 

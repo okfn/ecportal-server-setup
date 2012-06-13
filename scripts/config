@@ -31,10 +31,10 @@ if [[ "X" == "X$CKAN_BACKEND_SERVER" ]] ; then
   return 1
 fi
 
-CKAN_INSTANCE=uat
-CKAN_DOMAIN=uat.ecportal.ckan.org
-CKAN_APPLICATION=/applications/ckan/users/system
-CKAN_VERSION="release-v1.7"
+CKAN_INSTANCE=ecportal
+CKAN_DOMAIN=ecportal.ckan.org
+CKAN_APPLICATION=/applications/ckan
+CKAN_VERSION="release-v1.7.1-ecportal"
 
 if [[ ! $CKAN_INSTANCE ]]; then
   echo 'CKAN_INSTANCE variable not defined' 1>&2

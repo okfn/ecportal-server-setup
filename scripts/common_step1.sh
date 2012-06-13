@@ -29,9 +29,8 @@ yum update -y
 yum install -y vim mercurial git wget subversion screen lynx policycoreutils-python python-setuptools
 
 echo '------------------------------------------'
-echo 'Ensuring /applications directory exists   '
+echo 'Ensuring CKAN Application directory exists'
 echo '------------------------------------------'
-mkdir -p /applications/ckan/users/system/init.d
-mkdir -p /applications/ckan/users/okfn
-ln -s /home/okfn /applications/ckan/users/okfn
-
+mkdir -p $CKAN_APPLICATION/init.d
+mkdir -p $CKAN_APPLICATION/users/okfn
+ln -s /home/okfn $CKAN_APPLICATION/users/okfn
