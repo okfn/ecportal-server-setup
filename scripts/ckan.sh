@@ -200,7 +200,7 @@ EOF
 
   sed -e "s/^email_to =.*/email_to = ian.murray@okfn.org/" \
       -e "s/^error_email_from =.*/error_email_from = admin@$CKAN_DOMAIN/" \
-      -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
+      -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form ecportal_controller multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
       -e "s,^#\?licenses_group_url =.*,licenses_group_url = file://$PYENV/src/ckanext-ecportal/licenses.json," \
       -e "s/^ckan\.site_title =.*/ckan.site_title = Open Data Portal/" \
       -e "s,^ckan\.site_logo =.*,ckan.site_logo = /images/logo.png," \
