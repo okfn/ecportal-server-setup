@@ -149,10 +149,10 @@ EOF
   $PIP install -e "git+https://github.com/okfn/ckanext-ecportal.git#egg=ckanext-ecportal"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-ecportal and dependencies" && exit 1
 
-  $PIP install -e "git+https://github.com/okfn/ckanext-archiver.git@aefc230f304b5bfa6d3137c16ed124b088ef40f2#egg=ckanext-archiver"
+  $PIP install -e "git+https://github.com/okfn/ckanext-archiver.git@release-v1.7.1#egg=ckanext-archiver"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-archiver and dependencies" && exit 1
 
-  $PIP install -e "git+https://github.com/okfn/ckanext-qa.git@63766d5540ac183e80b48ab99d2da7bc8639d097#egg=ckanext-qa"
+  $PIP install -e "git+https://github.com/okfn/ckanext-qa.git@release-v1.7.1#egg=ckanext-qa"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-qa and dependencies" && exit 1
 
   $PIP install -e "git+https://github.com/okfn/ckanext-datastorer.git#egg=ckanext-datastorer"
