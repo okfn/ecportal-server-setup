@@ -80,20 +80,6 @@ EOF
   # 2. Make ckan "executable" by httpd
   chcon -R --type=httpd_sys_content_t $CKAN_APPLICATION/ckan
 
-	# NOTE : I've had to keep this line to drop selinux to
-	#        permissive mode because switching it on results
-	#        in a segmentation fault when mod_wsgi processes
-	#				 the request.  This may be something to do with
-	#				 mod_wsgi being compiled against a different version
-	#				 of the se_linux library to that of the python
-	#        interpretter.  That's just a guess of what's going
-	#        on.  And it's only a recent problem, prior to a
-	#				 couple of days ago, the selinux setup without the
-	#        following line was working.  I can't figure this out
-	#        and I'm out of time to do so.
-	#        
-  echo 0 > /selinux/enforce
-
   echo 'Setting apache to run at boot...'
   ln -s /etc/init.d/httpd $CKAN_APPLICATION/init.d/httpd
   chkconfig httpd on --level 345
@@ -198,7 +184,7 @@ EOF
   echo 'Customising ecportal .ini file.'
   echo '------------------------------------------'
 
-  sed -e "s/^email_to =.*/email_to = ian.murray@okfn.org/" \
+  sed -e "s/^email_to =.*/email_to = john.glover@okfn.org, david.raznick@okfn.org, ian.murray@okfn.org/" \
       -e "s/^error_email_from =.*/error_email_from = admin@$CKAN_DOMAIN/" \
       -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form ecportal_controller multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
       -e "s,^#\?licenses_group_url =.*,licenses_group_url = file://$PYENV/src/ckanext-ecportal/licenses.json," \
@@ -212,12 +198,18 @@ EOF
       -e 's|^ckan.default_roles.Group =.*|ckan.default_roles.Group = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
       -e 's|^ckan.default_roles.System =.*|ckan.default_roles.System = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
       -e 's|^ckan.default_roles.AuthorizationGroup =.*|ckan.default_roles.AuthorizationGroup = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
+      -e "s/^ckan\.locale_default =.*/ckan.locale_default = en/" \
+      -e "s/^#ckan\.locales_offered =.*/ckan.locales_offered = en de es fr it pl/" \
       -e "s/^ckan\.locale_order =.*/ckan.locale_order = en bg cs da de et el es fr ga it lv lt hu mt nl pl pt ro sk sl fi sv/" \
       -e "s/^ckan\.locales_filtered_out =.*/ckan.locales_filtered_out = pt_BR sr_Latn zh_TW ca cs_CZ no ru sq sr/" \
       -e "s/^# ckan\.datastore\.enabled = 1/ckan.datastore.enabled = 1/" \
       -e "/^\[app:main\]$/ a\
 ckan.root_path = /open-data/{{LANG}}/data\\
 ckan.tracking_enabled = true\\
+ckan.i18n_directory = $PYENV/src/ckanext-ecportal/ckanext/ecportal\\
+ckan.search_facets = groups tags res_format license_id vocab_language vocab_geographical_coverage\\
+ckan.default.group_type = organization\\
+qa.organisations = false\\
 " \
       -i $INI_FILE
 

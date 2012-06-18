@@ -60,7 +60,7 @@ server {
   access_log  /var/log/nginx/$CKAN_DOMAIN.access.log;
 
   location /open-data/elastic/ {
-    #internal;
+    internal;
     # location of elastic search
     proxy_pass http://${CKAN_BACKEND_SERVER}:9200/;
     proxy_set_header Host \$host;
