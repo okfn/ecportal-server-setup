@@ -39,6 +39,11 @@ install_solr () {
   echo 'Installing tomcat...'
   yum install -y tomcat6
   
+  if [[ $? -ne 0 ]]; then
+    echo 'Could not install dependencies from the configured yum repos'
+    exit 1
+  fi
+
   echo 'Linking to tomcat lib and configuration...'
   mkdir -p $SOLR_PRODUCT
   mkdir -p $TOMCAT_PRODUCT

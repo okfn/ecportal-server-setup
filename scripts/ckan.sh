@@ -54,6 +54,11 @@ install_ckan () {
   # Install direct dependencies of CKAN
   yum install -y python postgresql-devel postgresql postgresql-server libxml2 libxslt gcc gcc-c++ glibc-devel make python-devel libxml2 libxml2-devel libxslt-devel mod_wsgi
   
+  if [[ $? -ne 0 ]]; then
+    echo 'Could not install dependencies from the configured yum repos'
+    exit 1
+  fi
+
   echo '------------------------------------------'
   echo 'Setting up apache'
   echo '------------------------------------------'

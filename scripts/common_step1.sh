@@ -15,7 +15,6 @@ if [[ $? -ne 0 ]]; then
   useradd -d /home/okfn -m -s /bin/bash --gid okfn okfn
   echo 'Please create a password for the okfn user...'
   passwd okfn
-
 fi
 
 echo '------------------------------------------'
@@ -27,6 +26,11 @@ yum update -y
 
 # Install some necessary tools.
 yum install -y vim mercurial git wget subversion screen lynx policycoreutils-python python-setuptools
+
+if [[ $? -ne 0 ]]; then
+  echo 'Could not install dependencies from the configured yum repos'
+  exit 1
+fi
 
 echo '------------------------------------------'
 echo 'Ensuring CKAN Application directory exists'

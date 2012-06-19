@@ -44,6 +44,11 @@ install_postgresql () {
 
   yum install -y postgresql postgresql-server
 
+  if [[ $? -ne 0 ]]; then
+    echo 'Could not install dependencies from the configured yum repos'
+    exit 1
+  fi
+
   mkdir -p $POSTGRES_PRODUCT
   ln -s /etc/init.d/postgresql $CKAN_APPLICATION/init.d/postgresql
   ln -s /var/lib/pgsql $POSTGRES_PRODUCT/pgsql

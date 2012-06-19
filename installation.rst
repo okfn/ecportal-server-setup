@@ -35,6 +35,35 @@ on each machine, with the same config settings each time.
 
     v)   All other options should be left as they are.
 
+Repositories
+------------
+
+These deployment scripts have been tested on CentOS 6.2 and a trial version of
+RHEL 6.2.  As such, it may be the case that some packages we assume that are
+available in the yum repositories, are not available in the enterprise
+repositories.  To this end, there are two scripts available for adding
+additional repositories: `configure_centos_repositories.sh` and
+`configure_epel_repositories.sh`.  When testing on a trial version of RHEL 6.2
+we found that only adding the epel repository was not enough to satisfy all the
+dependencies.  (At least the `git` package was missing; there may be more).  So
+**we recommend you attempt the installation without adding any extra
+repositories; and if that fails then add the centos repository**.  If you wish
+to add the epel repository as well, we've provided a script to do so, but it's
+optional.
+
+To use the provided repository scripts: ::
+
+  # within the working directory, eg. /tmp/scripts
+  source ./configure_centos_repositories.sh
+  configure_centos_repositories
+
+Or, for the epel repository: ::
+
+  # within the working directory, eg. /tmp/scripts
+  source ./configure_epel_repositories.sh
+  configure_epel_repositories
+
+
 Backend Services Installation
 =============================
 
