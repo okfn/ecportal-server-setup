@@ -45,6 +45,8 @@ Solr is installed manually by dropping the approparite ``.war`` file into
 tomcat's webapps directory.  It's data directory is `$SOLR_PRODUCT/data` and
 the location of it's schema file etc is `$SOLR_PRODUCT/solr`.
 
+Tomcat is run under the ``tomcat`` user.
+
 Postgres
 ========
 
@@ -55,6 +57,8 @@ Postgres
 Postgresql is a package install with it's `/var/lib/pgsql` directory being
 linked to from `$POSTGRES_PRODUCT/pgsql`.  This contains the data directory as
 well as configuration files.
+
+Postgres is run under the ``postgres`` user.
 
 ElasticSearch
 =============
@@ -75,6 +79,8 @@ user, `elasticsearch`, which has had the number of file descriptors made
 available to it increased to 32000.  As per the production-deployment
 instructions for elasticsearch.
 
+Elasticsearch is run under the ``elasticsearch`` user.
+
 Nginx
 =====
 
@@ -90,11 +96,21 @@ to from `$NGINX_PRODUCT/etc`.
 Nginx is set up to forward `/open-data/` urls to apache.  And to proxy
 `/open-data/elastic/` urls to elasticsearch.
 
+Nginx's master process is running under ``root``.  This appears to be standard
+in order that nginx can open privelaged ports without having to "tinker" with
+permissions.  It should be possible to grant those permissions on the nginx
+executable using ``setcap``.
+
+Nginx's worker processes all run under the ``nginx`` user.
+
 Apache
 ======
 
 This is just a standard package installation.  Configuration files are found in
 `/etc/httpd/`.
+
+Like Nginx_, Apache's master process is run as ``root``.
+Apache's worker processes are run as ``apache``.
 
 Supervisord
 ===========
@@ -106,6 +122,9 @@ Supervisord
 This is installed into the python virtualenvironment associated with the CKAN
 instance.  It's configuration files; log files and run files (.pid and .sock
 files) are all found under `$SUPERVISOR_PRODUCT/{var/log, etc, var/run}`
+
+Supervisor is run under the ``okfn`` user.
+The monitored celery tasks are run under ``okfn`` as well.
 
 CKAN
 ====
