@@ -29,11 +29,9 @@ on each machine, with the same config settings each time.
          the frontend services are configured correctly.  If you are installing
          everything on the same machine, then leave it as `0.0.0.0`.
 
-    iii) The `CKAN_INSTANCE` can be anything; `ecportal` is a sensible choice.
+    iii) `CKAN_DOMAIN` should be the domain name serving CKAN.
 
-    iv)  `CKAN_DOMAIN` should be the domain name serving CKAN.
-
-    v)   All other options should be left as they are.
+    iv)  All other options should be left as they are.
 
 Repositories
 ------------
