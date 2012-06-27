@@ -31,7 +31,7 @@ install_elasticsearch () {
   echo 'Increasing number of file descriptors for elasticsearch user'
 
   # remove any pre-existing limits for the elasticsearch user
-  sed -e '/^elasticsearch/d'
+  sed -e '/^elasticsearch/d' \
       -i /etc/security/limits.conf
 
   cat <<EOF >> /etc/security/limits.conf

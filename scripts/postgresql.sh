@@ -66,7 +66,7 @@ install_postgresql () {
   then
 
     # remove all previous reference to the same backend server
-    sed -e "/^host  all all ${CKAN_BACKEND_SERVER}  ident$/d"
+    sed -e "/^host  all all ${CKAN_BACKEND_SERVER}  ident$/d" \
         -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
     echo "host  all all ${CKAN_BACKEND_SERVER}  ident" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
