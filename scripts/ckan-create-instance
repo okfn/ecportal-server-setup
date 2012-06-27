@@ -63,7 +63,7 @@ echo "Installing or upgrading CKAN ${INSTANCE} ..."
 echo "Ensuring users and groups are set up correctly ..."
 ckan_ensure_users_and_groups ${INSTANCE} ${CKAN_USER}
 
-chown ckan${INSTANCE}:okfn $CKAN_ETC/${INSTANCE}/install_settings.sh
+chown ckan${INSTANCE}:${CKAN_USER} $CKAN_ETC/${INSTANCE}/install_settings.sh
 
 echo "Ensuring directories exist for ${INSTANCE} CKAN INSTANCE ..."
 ckan_make_ckan_directories ${INSTANCE}
