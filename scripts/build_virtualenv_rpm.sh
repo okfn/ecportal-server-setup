@@ -7,6 +7,16 @@
 ## This requires the following environment variables to be set:
 ##
 ## $PYENV    : The location of the virtual environment
+##
+## Please note, this is a very naive packaging script.  It makes
+## the assumption that all the configuration is identical
+## on the machine that's building the RPM as on the machine
+## that it will be installed on.  In particular, the location
+## of the virtualenv.  It's not sufficient to use the
+## `--relocation` flag of the rpm tool when installing this
+## rpm because the of the `bin/activate` shell script in
+## particular: it has the location of the virtualenv  hard-coded
+## within it.
 
 if [ "X" == "X$PYENV" ]
 then
