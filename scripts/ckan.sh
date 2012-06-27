@@ -11,6 +11,10 @@
 ## $PYENV                  : The location of the python environment.
 ## $SOLR_PRODUCT           : The location of the solr installation
 ## $CKAN_DATABASE_PASSWORD : The CKAN database password
+## $PACKAGE_INSTALL        : Whether to install the python dependencies
+##                           from an RPM or not.
+## $PYENV_RPM              : The name of RPM to use to install the
+##                           python dependencies.
 
 if [ "X" == "X$CKAN_APPLICATION" ]
 then
@@ -42,9 +46,88 @@ then
   exit 1
 fi
 
+if [ ! "yes" == "$PACKAGE_INSTALL" ] && [ ! "no" == "$PACKAGE_INSTALL" ]
+then
+  echo 'ERROR: PACKAGE_INSTALL environment variable is not set to either "yes" or "no"'
+  exit 1
+fi
+
+if [ "X" == "X$PYENV_RPM" ]
+then
+  echo 'ERROR: PYENV_RPM environment variable is not set'
+  exit 1
+fi
+
 PASTER=$PYENV/bin/paster
 PIP=$PYENV/bin/pip
 INI_FILE="$CKAN_ETC/$CKAN_INSTANCE/$CKAN_INSTANCE.ini"
+
+install_python_dependencies_from_source () {
+  
+  echo '------------------------------------------'
+  echo 'Installing python dependencies from source'
+  echo '------------------------------------------'
+
+	$PIP install pastescript
+
+  echo '------------------------------------------'
+  echo 'Downloading and installing CKAN into pyenv'
+  echo '------------------------------------------'
+  # Installing CKAN into the python virtual environment
+  $PIP install --ignore-installed -e "git+https://github.com/okfn/ckan.git@${CKAN_VERSION}#egg=ckan"
+  
+  echo '------------------------------------------'
+  echo 'Installing CKAN python dependencies       '
+  echo '------------------------------------------'
+  
+  # Installing CKAN's python dependencies into the python virtual environment
+  # This step may take quite a while due to the need to download quite
+  # a few python libraries.  Also, it's prone to failure as it's reliant
+  # on a number of sources.
+  $PIP install --ignore-installed -r $PYENV/src/ckan/requires/lucid_missing.txt \
+                                  -r $PYENV/src/ckan/requires/lucid_conflict.txt \
+                                  -r $PYENV/src/ckan/requires/lucid_present.txt
+  
+  if [ $? -ne 0 ]
+  then
+      echo "WARNING: Failed to install all of CKAN's dependencies"
+      echo "... Trying once more..."
+      $PIP install --ignore-installed -r $PYENV/src/ckan/requires/lucid_missing.txt \
+                                      -r $PYENV/src/ckan/requires/lucid_conflict.txt \
+                                      -r $PYENV/src/ckan/requires/lucid_present.txt
+  
+      if [ $? -ne 0 ]
+      then
+              echo "ERROR: Failed to install all of CKAN's dependencies"
+              exit 1
+      fi
+  fi
+
+  echo '------------------------------------------'
+  echo 'Installing ckanext-ecportal dependencies  '
+  echo '------------------------------------------'
+  $PIP install -e "git+https://github.com/okfn/ckanext-ecportal.git#egg=ckanext-ecportal"
+  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-ecportal and dependencies" && exit 1
+
+  $PIP install -e "git+https://github.com/okfn/ckanext-archiver.git@release-v1.7.1#egg=ckanext-archiver"
+  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-archiver and dependencies" && exit 1
+
+  $PIP install -e "git+https://github.com/okfn/ckanext-qa.git@release-v1.7.1#egg=ckanext-qa"
+  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-qa and dependencies" && exit 1
+
+  $PIP install -e "git+https://github.com/okfn/ckanext-datastorer.git#egg=ckanext-datastorer"
+  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-datastorer and dependencies" && exit 1
+
+}
+
+install_python_dependencies_from_rpm () {
+  echo '------------------------------------------'
+  echo 'Installing python dependencies from RPM   '
+  echo '------------------------------------------'
+
+	echo "Installing from $SCRIPTS_HOME/../rpms/$PYENV_RPM"
+	rpm -i $SCRIPTS_HOME/../rpms/$PYENV_RPM
+}
 
 install_ckan () {
   echo '------------------------------------------'
@@ -105,56 +188,15 @@ EOF
   mkdir -p "$PYENV"
   cd "$PYENV"
   virtualenv --no-site-packages .
-  $PIP install pastescript
 
-  echo '------------------------------------------'
-  echo 'Downloading and installing CKAN into pyenv'
-  echo '------------------------------------------'
-  # Installing CKAN into the python virtual environment
-  $PIP install --ignore-installed -e "git+https://github.com/okfn/ckan.git@${CKAN_VERSION}#egg=ckan"
-  
-  echo '------------------------------------------'
-  echo 'Installing CKAN python dependencies       '
-  echo '------------------------------------------'
-  
-  # Installing CKAN's python dependencies into the python virtual environment
-  # This step may take quite a while due to the need to download quite
-  # a few python libraries.  Also, it's prone to failure as it's reliant
-  # on a number of sources.
-  $PIP install --ignore-installed -r $PYENV/src/ckan/requires/lucid_missing.txt \
-                                  -r $PYENV/src/ckan/requires/lucid_conflict.txt \
-                                  -r $PYENV/src/ckan/requires/lucid_present.txt
-  
-  if [ $? -ne 0 ]
-  then
-      echo "WARNING: Failed to install all of CKAN's dependencies"
-      echo "... Trying once more..."
-      $PIP install --ignore-installed -r $PYENV/src/ckan/requires/lucid_missing.txt \
-                                      -r $PYENV/src/ckan/requires/lucid_conflict.txt \
-                                      -r $PYENV/src/ckan/requires/lucid_present.txt
-  
-      if [ $? -ne 0 ]
-      then
-              echo "ERROR: Failed to install all of CKAN's dependencies"
-              exit 1
-      fi
-  fi
-
-  echo '------------------------------------------'
-  echo 'Installing ckanext-ecportal dependencies  '
-  echo '------------------------------------------'
-  $PIP install -e "git+https://github.com/okfn/ckanext-ecportal.git#egg=ckanext-ecportal"
-  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-ecportal and dependencies" && exit 1
-
-  $PIP install -e "git+https://github.com/okfn/ckanext-archiver.git@release-v1.7.1#egg=ckanext-archiver"
-  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-archiver and dependencies" && exit 1
-
-  $PIP install -e "git+https://github.com/okfn/ckanext-qa.git@release-v1.7.1#egg=ckanext-qa"
-  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-qa and dependencies" && exit 1
-
-  $PIP install -e "git+https://github.com/okfn/ckanext-datastorer.git#egg=ckanext-datastorer"
-  [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-datastorer and dependencies" && exit 1
-
+	# Python dependencies can either be installed from source,
+	# or from a prebuilt RPM.  The default is the RPM install.
+	if [ "yes" == "$PACKAGE_INSTALL" ]
+	then
+		install_python_dependencies_from_rpm
+	else
+		install_python_dependencies_from_source
+	fi
 
   echo "------------------------------------------"
   echo "Creating new CKAN instance: $CKAN_INSTANCE"

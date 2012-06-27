@@ -9,6 +9,9 @@
 ## $CKAN_APPLICATION : The location of the CKAN application,
 ##                     eg - /applications/ckan/users/system
 ## $PYENV            : The location of the python environment.
+## $PACKAGE_INSTALL  : Whether to install the python dependencies
+##                     from an RPM or not.  If true, then it's assumed
+##                     all the python dependencies are met already.
 
 if [ "X" == "X$CKAN_APPLICATION" ]
 then
@@ -25,6 +28,12 @@ fi
 if [ "X" == "X$CKAN_USER" ]
 then
   echo 'ERROR: CKAN_USER environment variable is not set'
+  exit 1
+fi
+
+if [ ! "yes" == "$PACKAGE_INSTALL" ] && [ ! "no" == "$PACKAGE_INSTALL" ]
+then
+  echo 'ERROR: PACKAGE_INSTALL environment variable is not set to either "yes" or "no"'
   exit 1
 fi
 
@@ -46,7 +55,12 @@ install_supervisor () {
 
   mkdir -p "$SUPERVISOR_PRODUCT"
 
-  $PIP install supervisor
+  # Only install supervisor if not already installed
+  if [ "no" == "$PACKAGE_INSTALL" ]
+  then
+    $PIP install supervisor
+  fi
+
   mkdir -p $SUPERVISOR_PRODUCT/etc/conf.d
   mkdir -p $SUPERVISOR_PRODUCT/var/run
   mkdir -p $SUPERVISOR_PRODUCT/var/log/supervisor

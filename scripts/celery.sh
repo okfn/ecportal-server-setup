@@ -12,6 +12,9 @@
 ## $SUPERVISOR_PRODUCT  : The location of the supervisord application.
 ## $CKAN_INSTANCE       : The ckan instance name
 ## $CKAN_ETC            : The ckan configuration directory
+## $PACKAGE_INSTALL     : Whether to install the python dependencies
+##                        from an RPM or not.  If true, then it's assumed
+##                        all the python dependencies are met already.
   
 if [ "X" == "X$CKAN_APPLICATION" ]
 then
@@ -61,6 +64,12 @@ then
   exit 1
 fi
 
+if [ ! "yes" == "$PACKAGE_INSTALL" ] && [ ! "no" == "$PACKAGE_INSTALL" ]
+then
+  echo 'ERROR: PACKAGE_INSTALL environment variable is not set to either "yes" or "no"'
+  exit 1
+fi
+
 PIP=$PYENV/bin/pip
 
 install_celery () {
@@ -70,10 +79,15 @@ install_celery () {
   echo 'Installing celery'
   echo '------------------------------------------'
 
-  $PIP install celery
+  # Only install supervisor if not already installed
+  if [ "no" == "$PACKAGE_INSTALL" ]
+  then
+    $PIP install celery
 
-  # kombu 2.1.8 has an import error
-  ## $PIP install kombu==2.1.3
+    # kombu 2.1.8 has an import error
+    ## $PIP install kombu==2.1.3
+  fi
+
 
   echo 'Installing celery under supervisord'
   cat <<EOF > $SUPERVISOR_PRODUCT/etc/conf.d/celery-$CKAN_INSTANCE.conf
