@@ -65,7 +65,12 @@ install_solr () {
   
   cp /tmp/apache-solr-1.4.1/dist/apache-solr-1.4.1.war $TOMCAT_PRODUCT/lib/webapps/solr.war
   cp -R /tmp/apache-solr-1.4.1/example/solr $SOLR_PRODUCT/solr/
-  echo "JAVA_OPTS=\"\${JAVA_OPTS} -Dsolr.solr.home=$SOLR_PRODUCT/solr\"" >> $TOMCAT_PRODUCT/etc/tomcat6.conf
+
+  # Check if the file has already been modified.
+  egrep "$SOLR_PRODUCT" $TOMCAT_PRODUCT/etc/tomcat6.conf
+  if [[ $? -ne 0 ]]; then
+    echo "JAVA_OPTS=\"\${JAVA_OPTS} -Dsolr.solr.home=$SOLR_PRODUCT/solr\"" >> $TOMCAT_PRODUCT/etc/tomcat6.conf
+  fi
   
   # Set the data directory
   mkdir -p $SOLR_PRODUCT/data

@@ -64,6 +64,11 @@ install_postgresql () {
   # allow postgresql to accept non-local connections too
   if [ ! "$CKAN_BACKEND_SERVER" == "0.0.0.0" ]
   then
+
+    # remove all previous reference to the same backend server
+    sed -e "/^host  all all ${CKAN_BACKEND_SERVER}  ident$/d"
+        -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
+
     echo "host  all all ${CKAN_BACKEND_SERVER}  ident" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
   fi
 

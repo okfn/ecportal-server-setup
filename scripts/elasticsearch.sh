@@ -29,6 +29,11 @@ install_elasticsearch () {
   useradd --system --shell /sbin/nologin elasticsearch
   
   echo 'Increasing number of file descriptors for elasticsearch user'
+
+  # remove any pre-existing limits for the elasticsearch user
+  sed -e '/^elasticsearch/d'
+      -i /etc/security/limits.conf
+
   cat <<EOF >> /etc/security/limits.conf
 elasticsearch   hard    nofile          32000
 elasticsearch   soft    nofile          32000
