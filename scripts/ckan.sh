@@ -132,8 +132,24 @@ install_python_dependencies_from_rpm () {
   echo 'Installing python dependencies from RPM   '
   echo '------------------------------------------'
 
-	echo "Installing from $SCRIPTS_HOME/../rpms/$PYENV_RPM"
-	rpm -i $SCRIPTS_HOME/../rpms/$PYENV_RPM
+	local rpm_file
+	rpm_file=$SCRIPTS_HOME/../rpms/$PYENV_RPM
+
+	echo 'Checking the rpm has been built for this installation...'
+	local num_files num_matching_files
+	num_files=`rpm -qpl $rpm_file  |  wc -l`
+	num_matching_files=`rpm -qpl $rpm_file | egrep "^$PYENV" | wc -l`
+
+	if [ ! $num_files == $num_matching_files ]
+	then
+		echo 'ERROR: This rpm appears to have been built for a different pyenv location:'
+		rpm -qpl $rpm_file | head -1
+		echo '       Cannot install python dependencies...'
+		exit 1
+	fi
+
+	echo "Installing from $rpm_file"
+	rpm -i $rpm_file
 }
 
 install_ckan () {
