@@ -17,7 +17,9 @@ separate machines, then the following preliminary steps need to be carried out
 on each machine, with the same config settings each time.
 
  1. You need a copy of these instructions, and the scripts that go with them.
-    Extract the scripts folder to a working directory; eg. `/tmp/scripts`
+    Extract the scripts folder to a working directory; eg. `/tmp/scripts`, and the
+    rpms folder to a working directory at the same level as the scripts, eg
+    `/tmp/rpms`.
 
  #. From the working directory, edit the `config` file.
 
@@ -103,11 +105,20 @@ Frontend Services Installation
 
  1. First, ensure you have followed the preliminary steps above.
 
- 2. From within `/tmp/scripts`, run the following **as root**: ::
+ #. From within `/tmp/rpms`, download the packaged-up python dependencies: ::
+
+      yum install wget # if not already installed
+
+      wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.0-1.noarch.rpm
+
+    This is an rpm of the python virtual environment, and is used to expediate
+    the install process.
+
+ #. From within `/tmp/scripts`, run the following **as root**: ::
 
       bash ./install_frontend_services.sh | tee frontend_install.log
 
- 3. This will prompt you for a password for the `ecportal` user if you are running
+ #. This will prompt you for a password for the `ecportal` user if you are running
     this on a separate machine to the backend.
 
 This will install and configure nginx, apache and CKAN.
@@ -115,7 +126,8 @@ This will install and configure nginx, apache and CKAN.
 Overview of frontend installation
 ---------------------------------
 
-The frontend installation is broken into 2 parts: installing nginx, and installing CKAN and apache:
+The frontend installation is broken into 2 parts: installing nginx, and
+installing CKAN and apache:
 
 .. include:: scripts/install_frontend_services.sh
    :code: bash
