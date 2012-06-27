@@ -105,33 +105,33 @@ server {
 
   location /open-data/data {
      proxy_pass http://0.0.0.0:8008;
-     proxy_set_header Host $host:80;
-     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-     proxy_set_header X-Scheme $scheme;
+     proxy_set_header Host \$host:80;
+     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+     proxy_set_header X-Scheme \$scheme;
      proxy_cache cache;
-     proxy_cache_bypass $cookie_auth_tkt;
-     proxy_no_cache $cookie_auth_tkt;
+     proxy_cache_bypass \$cookie_auth_tkt;
+     proxy_no_cache \$cookie_auth_tkt;
      proxy_cache_valid 30m;
      proxy_cache_valid 404 5m;
   }
 
   location ~ /open-data/[a-zA-z][a-zA-z]/data$ {
      proxy_pass http://0.0.0.0:8008;
-     proxy_set_header Host $host:80;
-     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-     proxy_set_header X-Scheme $scheme;
+     proxy_set_header Host \$host:80;
+     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+     proxy_set_header X-Scheme \$scheme;
      proxy_cache cache;
-     proxy_cache_bypass $cookie_auth_tkt;
-     proxy_no_cache $cookie_auth_tkt;
+     proxy_cache_bypass \$cookie_auth_tkt;
+     proxy_no_cache \$cookie_auth_tkt;
      proxy_cache_valid 30m;
      proxy_cache_valid 404 5m;
   }
 
   location /open-data/ {
      proxy_pass http://0.0.0.0:8008;
-     proxy_set_header Host $host:80;
-     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-     proxy_set_header X-Scheme $scheme;
+     proxy_set_header Host \$host:80;
+     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+     proxy_set_header X-Scheme \$scheme;
   }
 }
 EOF
