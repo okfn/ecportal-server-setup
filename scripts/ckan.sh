@@ -68,6 +68,13 @@ install_python_dependencies_from_source () {
   echo 'Installing python dependencies from source'
   echo '------------------------------------------'
 
+  easy_install --upgrade pip "pip>=1.0" "pip<=1.0.99"
+  pip install virtualenv
+  
+  mkdir -p "$PYENV"
+  cd "$PYENV"
+  virtualenv --no-site-packages .
+
 	$PIP install pastescript
 
   echo '------------------------------------------'
@@ -182,13 +189,6 @@ EOF
   echo '------------------------------------------'
   echo 'Setting up python virtualenv              '
   echo '------------------------------------------'
-  easy_install --upgrade pip "pip>=1.0" "pip<=1.0.99"
-  pip install virtualenv
-  
-  mkdir -p "$PYENV"
-  cd "$PYENV"
-  virtualenv --no-site-packages .
-
 	# Python dependencies can either be installed from source,
 	# or from a prebuilt RPM.  The default is the RPM install.
 	if [ "yes" == "$PACKAGE_INSTALL" ]
