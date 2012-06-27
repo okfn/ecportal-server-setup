@@ -7,14 +7,14 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo '------------------------------------------'
-echo 'Creating okfn user'
+echo "Creating $CKAN_USER user"
 echo '------------------------------------------'
-id okfn
+id $CKAN_USER
 if [[ $? -ne 0 ]]; then
-  sudo groupadd --system okfn
-  useradd -d /home/okfn -m -s /bin/bash --gid okfn okfn
-  echo 'Please create a password for the okfn user...'
-  passwd okfn
+  sudo groupadd --system $CKAN_USER
+  useradd -d /home/$CKAN_USER -m -s /bin/bash --gid $CKAN_USER $CKAN_USER
+  echo "Please create a password for the $CKAN_USER user..."
+  passwd $CKAN_USER
 fi
 
 echo '------------------------------------------'
@@ -36,5 +36,5 @@ echo '------------------------------------------'
 echo 'Ensuring CKAN Application directory exists'
 echo '------------------------------------------'
 mkdir -p $CKAN_APPLICATION/init.d
-mkdir -p $CKAN_APPLICATION/users/okfn
-ln -s /home/okfn $CKAN_APPLICATION/users/okfn
+mkdir -p $CKAN_APPLICATION/users/$CKAN_USER
+ln -s /home/$CKAN_USER $CKAN_APPLICATION/users/$CKAN_USER

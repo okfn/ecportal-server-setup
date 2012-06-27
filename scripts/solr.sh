@@ -22,6 +22,12 @@ then
   exit 1
 fi
 
+if [ "X" == "X$CKAN_USER" ]
+then
+  echo 'ERROR: CKAN_USER environment variable is not set'
+  exit 1
+fi
+
 # Locations of solr and tomcat within the CKAN_APPLICATION structure. 
 SOLR_PRODUCT=$CKAN_APPLICATION/solr
 TOMCAT_PRODUCT=$CKAN_APPLICATION/tomcat
@@ -65,7 +71,7 @@ install_solr () {
   mkdir -p $SOLR_PRODUCT/data
   sed -e "s,<dataDir>\${solr.data.dir:./solr/data}</dataDir>,<dataDir>\${solr.data.dir:$SOLR_PRODUCT/data}</dataDir>," \
       -i $SOLR_PRODUCT/solr/conf/solrconfig.xml
-  chown tomcat:okfn -R $SOLR_PRODUCT
+  chown tomcat:$CKAN_USER -R $SOLR_PRODUCT
   
   # Change the port number tomcat listens on from 8080 8983
   sed -e 's,port="8080",port="8983",' \

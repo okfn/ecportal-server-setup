@@ -123,8 +123,8 @@ This is installed into the python virtualenvironment associated with the CKAN
 instance.  It's configuration files; log files and run files (.pid and .sock
 files) are all found under `$SUPERVISOR_PRODUCT/{var/log, etc, var/run}`
 
-Supervisor is run under the ``okfn`` user.
-The monitored celery tasks are run under ``okfn`` as well.
+Supervisor is run under the ``ecportal`` user.
+The monitored celery tasks are run under ``ecportal`` as well.
 
 CKAN
 ====

@@ -43,6 +43,12 @@ then
   exit 1
 fi
 
+if [ "X" == "X$CKAN_USER" ]
+then
+  echo 'ERROR: CKAN_USER environment variable is not set'
+  exit 1
+fi
+
 if [ ! -d "$PYENV" ]
 then
   echo 'ERROR: python virtual environment does not exist.'
@@ -86,7 +92,7 @@ install_celery () {
 command=$PYENV/bin/paster --plugin=ckan celeryd --config=$CKAN_ETC/$CKAN_INSTANCE/$CKAN_INSTANCE.ini
 
 ; user that owns virtual environment.
-user=okfn
+user=$CKAN_USER
 
 numprocs=1
 stdout_logfile=$CKAN_APPLICATION/ckan/var/log/celeryd.log

@@ -32,6 +32,7 @@ if [[ "X" == "X$CKAN_BACKEND_SERVER" ]] ; then
 fi
 
 CKAN_INSTANCE=ecportal
+CKAN_USER=ecportal
 CKAN_DOMAIN=ecportal.ckan.org
 CKAN_APPLICATION=/applications/ckan
 CKAN_VERSION="release-v1.7.1-ecportal"

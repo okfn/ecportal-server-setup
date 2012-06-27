@@ -73,7 +73,7 @@ Backend Services Installation
 
       bash ./install_backend_services.sh | tee ./backend_install.log
 
- 3. This will prompt you for a password for the `okfn` user.  Other thatn that
+ 3. This will prompt you for a password for the `ecportal` user.  Other thatn that
     it should run without further prompts.
 
 This will install solr, postgres and elasticsearch.
@@ -109,7 +109,7 @@ Frontend Services Installation
 
       bash ./install_frontend_services.sh | tee frontend_install.log
 
- 3. This will prompt you for a password for the `okfn` user if you are running
+ 3. This will prompt you for a password for the `ecportal` user if you are running
     this on a separate machine to the backend.
 
 This will install and configure nginx, apache and CKAN.

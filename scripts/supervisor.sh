@@ -22,6 +22,12 @@ then
   exit 1
 fi
 
+if [ "X" == "X$CKAN_USER" ]
+then
+  echo 'ERROR: CKAN_USER environment variable is not set'
+  exit 1
+fi
+
 if [ ! -d "$PYENV" ]
 then
   echo 'ERROR: python virtual environment does not exist.'
@@ -52,7 +58,7 @@ install_supervisor () {
     -e "s,^;\?childlogdir=.*,childlogdir=$SUPERVISOR_PRODUCT/var/log/supervisor," \
     -e "s,^serverurl=.*,serverurl=unix://$SUPERVISOR_PRODUCT/var/run/supervisor.sock," \
     -e "s,^;\[include\],[include]," \
-    -e "s,^;user=.*,user=okfn," \
+    -e "s,^;user=.*,user=$CKAN_USER," \
     -e "s,^;\?files =.*,files=$SUPERVISOR_PRODUCT/etc/conf.d/*.conf," > $SUPERVISOR_PRODUCT/etc/supervisord.conf
 
   cat <<EOF > /etc/init.d/supervisord
@@ -119,8 +125,8 @@ EOF
   chkconfig --list supervisord
 
 echo "Setting permissions on $SUPERVISOR_PRODUCT"
-chown -R okfn "$SUPERVISOR_PRODUCT"
-chgrp -R okfn "$SUPERVISOR_PRODUCT"
+chown -R $CKAN_USER "$SUPERVISOR_PRODUCT"
+chgrp -R $CKAN_USER "$SUPERVISOR_PRODUCT"
 
 echo 'Starting supervisord...'
 chmod +x $CKAN_APPLICATION/init.d/supervisord

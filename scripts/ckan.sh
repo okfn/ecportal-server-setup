@@ -36,6 +36,12 @@ then
   exit 1
 fi
 
+if [ "X" == "X$CKAN_USER" ]
+then
+  echo 'ERROR: CKAN_USER environment variable is not set'
+  exit 1
+fi
+
 PASTER=$PYENV/bin/paster
 PIP=$PYENV/bin/pip
 INI_FILE="$CKAN_ETC/$CKAN_INSTANCE/$CKAN_INSTANCE.ini"
@@ -170,7 +176,7 @@ EOF
 
   source $PYENV/bin/activate
   source ./common.sh
-  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC
+  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER
 
   # Configure the new instance's ini file
   echo 'Setting database connection strings...'
@@ -229,8 +235,8 @@ qa.organisations = false\\
 
 
   echo "Setting file permmissions on $CKAN_APPLICATION/ckan"
-  chown -R okfn "$CKAN_APPLICATION/ckan"
-  chgrp -R okfn "$CKAN_APPLICATION/ckan"
+  chown -R $CKAN_USER "$CKAN_APPLICATION/ckan"
+  chgrp -R $CKAN_USER "$CKAN_APPLICATION/ckan"
   chown -R apache $CKAN_LIB/$CKAN_INSTANCE/sstore
   chown -R apache $CKAN_LIB/$CKAN_INSTANCE/data
 
@@ -264,7 +270,7 @@ qa.organisations = false\\
 
   mkdir -p $CKAN_LIB/$CKAN_INSTANCE/file-storage
   chown apache -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
-  chgrp okfn -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
+  chgrp $CKAN_USER -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
   $PIP install pairtree
   sed -e "/^\[app:main\]$/ a\
 ofs.impl = pairtree\\

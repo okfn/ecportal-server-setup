@@ -24,14 +24,22 @@ ckan_set_log_file_permissions () {
 }
 
 ckan_ensure_users_and_groups () {
-    local INSTANCE
+    local INSTANCE CKAN_USER
     INSTANCE=$1
+    CKAN_USER=$2
+
+    if [ "X$1" = "X" ] || [ "X$2" = "X" ] ; then
+      echo "ERROR: call the ckan_ensure_users_and_groups function with and instance and a user name, e.g."
+      echo "  std ecportal"
+      exit 1
+    fi
+
     COMMAND_OUTPUT=`cat /etc/group | grep "ckan${INSTANCE}:"`
     if ! [[ "$COMMAND_OUTPUT" =~ "ckan${INSTANCE}:" ]] ; then
         echo "Creating the 'ckan${INSTANCE}' group ..." 
         sudo groupadd --system "ckan${INSTANCE}"
-        echo "Adding the okfn user to it..."
-        sudo usermod --append --groups "ckan${INSTANCE}" okfn
+        echo "Adding the $CKAN_USER user to it..."
+        sudo usermod --append --groups "ckan${INSTANCE}" $CKAN_USER
     fi
     COMMAND_OUTPUT=`cat /etc/passwd | grep "ckan${INSTANCE}:"`
     if ! [[ "$COMMAND_OUTPUT" =~ "ckan${INSTANCE}:" ]] ; then
@@ -200,14 +208,15 @@ ckan_create_wsgi_handler () {
 }
 
 ckan_overwrite_apache_config () {
-    local INSTANCE ServerName
-    if [ "X$1" = "X" ] ; then
-        echo "ERROR: call the function overwrite_apache_config function with an INSTANCE name, and the server name e.g." 
-        echo "       std uat.ec.ckan.org"
+    local INSTANCE ServerName CKAN_USER
+    if [ "X$1" = "X" ] || [ "X$2" = "X" ] || [ "X$3" = "X" ] ; then
+        echo "ERROR: call the function overwrite_apache_config function with an INSTANCE name, the server name and the ckan username e.g." 
+        echo "       std uat.ec.ckan.org ecportal"
         exit 1
     else
         INSTANCE=$1
         ServerName=$2
+        CKAN_USER=$3
 
         echo "Creating auth.py file instance ${INSTANCE}"
         cat << EOF > $CKAN_LIB/${INSTANCE}/auth.py
@@ -238,12 +247,12 @@ EOF
 			#        Allow from all
 			#    </Directory>
 			
-			#    <Directory /home/okfn/ecportal/>
+			#    <Directory /home/$CKAN_USER/ecportal/>
 			#       allow from all
 			#       AuthType Basic
 			#       AuthName "CKAN"
 			#       AuthBasicProvider wsgi
-			#       WSGIAuthUserScript /home/okfn/ecportal/auth.py
+			#       WSGIAuthUserScript /home/$CKAN_USER/ecportal/auth.py
 			#       Require valid-user 
 			#    </Directory>
 			
