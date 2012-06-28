@@ -35,6 +35,6 @@ build_virtualenv_rpm () {
   gem install fpm
 
   echo 'Building package'
-  fpm -s dir -t rpm -n 'ecportal-python-virtual-environment' -v 1.0 -a all $PYENV
+  fpm -s dir -t rpm -n 'ecportal-python-virtual-environment' -v 1.7.1 -a x86_64 $PYENV
 
 }

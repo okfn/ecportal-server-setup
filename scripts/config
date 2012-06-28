@@ -37,7 +37,7 @@ CKAN_DOMAIN=ecportal.ckan.org
 CKAN_APPLICATION=/applications/ckan
 CKAN_VERSION="release-v1.7.1-ecportal"
 PACKAGE_INSTALL="yes"
-PYENV_RPM="ecportal-python-virtual-environment-1.0-1.noarch.rpm"
+PYENV_RPM="ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm"
 
 if [[ ! $CKAN_INSTANCE ]]; then
   echo 'CKAN_INSTANCE variable not defined' 1>&2
