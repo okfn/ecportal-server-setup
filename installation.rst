@@ -109,7 +109,7 @@ Frontend Services Installation
 
       yum install wget # if not already installed
 
-      wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.0-1.noarch.rpm
+      wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm
 
     This is an rpm of the python virtual environment, and is used to expediate
     the install process.
