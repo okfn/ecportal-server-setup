@@ -153,15 +153,6 @@ comments as to what's being run, but roughly, it does the following:
   #. Modifies the generated CKAN configuration file with settings particular
      for ecportal, including the correct connection strings for solr and postgres.
 
-  #. Applies two patches to the CKAN installation.  This is because they are
-     specific to ecportal's deployment:
-
-     .. include:: scripts/ckan.patch
-        :code: diff
-     
-     .. include:: scripts/elastic_search_redirect.patch
-        :code: diff
-
   #. Runs some commands to load initial data for the installation, ie - the
      ecportal vocabs.
 
