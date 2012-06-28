@@ -294,7 +294,7 @@ EOF
 			        Options +Indexes
 			    </Location>
 			
-			    # this is our app
+			    # this is CKAN app
 			    WSGIScriptAlias /open-data/data $CKAN_LIB/${INSTANCE}/wsgi.py
 			    WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=2 threads=10
 			    WSGIProcessGroup ${INSTANCE}
@@ -309,34 +309,39 @@ EOF
 			        Order allow,deny
 			        allow from all
 			    </Directory>
-			    RedirectMatch ^/$ /open-data/
+
+			    <Directory /var/www/uploads>
+			        Options Indexes FollowSymLinks MultiViews
+			        IndexOptions SuppressIcon
+			        AllowOverride All
+			        Order allow,deny
+			        allow from all
+			    </Directory>
+					
+					Alias /open-data/data/uploads /var/www/uploads
+
 			#    Alias /open-data /var/www/drupal
 			
 			    # Added by InfAI
-			    <Directory /home/michaelm/repositories/sources/visualizations/cubeVizWidget/cubeViz>
+			    <Directory /applications/cubeviz>
 			        Options Indexes FollowSymLinks MultiViews
 			        AllowOverride All
 			        Order allow,deny
 			        Allow from all
 			    </Directory>
-			    Alias /open-data/apps/cubeviz /home/michaelm/repositories/sources/visualizations/cubeVizWidget/cubeViz
-			    Alias /open-data/apps/spatial-browser /home/clauss/Repositories/SpatialSemanticBrowsingWidgets
+			    Alias /open-data/apps/cubeviz /applications/cubeviz
+			    Alias /open-data/apps/semmap /applications/semmap
 			
 			    <Proxy *>
 			            Order allow,deny
 			            allow from all
 			    </Proxy>
 			
-			    ProxyPass /open-data/sparql http://localhost:8894/sparql retry=0
-			    ProxyPassReverse /open-data/sparql http://localhost:8894/sparql
+			    ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
+			    ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
 			
-			    # Virtuoso 6.1.5 endpoint
-			    ProxyPass /open-data/sparql615 http://localhost:8893/sparql retry=0
-			    ProxyPassReverse /open-data/sparql615 http://localhost:8893/sparql
-			
-			
-			    ProxyPass /open-data/conductor http://localhost:8892/conductor retry=0
-			    ProxyPassReverse /open-data/conductor http://localhost:8892/conductor
+			    ProxyPass /open-data/conductor http://localhost:8890/conductor retry=0
+			    ProxyPassReverse /open-data/conductor http://localhost:8890/conductor
 			
 			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
 			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
