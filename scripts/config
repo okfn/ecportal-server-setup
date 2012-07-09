@@ -31,10 +31,10 @@ if [[ "X" == "X$CKAN_BACKEND_SERVER" ]] ; then
   return 1
 fi
 
-CKAN_INSTANCE=ecportal
-CKAN_USER=ecportal
-CKAN_DOMAIN=ecportal.ckan.org
-CKAN_APPLICATION=/applications/ckan
+CKAN_INSTANCE=ecodp
+CKAN_USER=ecodp
+CKAN_DOMAIN=ecodp.ckan.org
+CKAN_APPLICATION=/applications/ecodp/users/ecodp
 CKAN_VERSION="release-v1.7.1-ecportal"
 PACKAGE_INSTALL="yes"
 PYENV_RPM="ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm"
