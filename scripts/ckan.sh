@@ -257,9 +257,9 @@ EOF
       -e "s/^error_email_from =.*/error_email_from = admin@$CKAN_DOMAIN/" \
       -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form ecportal_controller multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
       -e "s,^#\?licenses_group_url =.*,licenses_group_url = file://$PYENV/src/ckanext-ecportal/licenses.json," \
-      -e "s/^ckan\.site_title =.*/ckan.site_title = Open Data Portal/" \
+      -e "s/^ckan\.site_title =.*/ckan.site_title = Data Portal/" \
       -e "s,^ckan\.site_logo =.*,ckan.site_logo = /images/logo.png," \
-      -e "s/^ckan\.site_description =.*/ckan.site_description = The EU Open Data Hub/" \
+      -e "s/^ckan\.site_description =.*/ckan.site_description = The Open Data Hub of the European Union/" \
       -e "s,^ckan\.site_url =.*,ckan.site_url = http://$CKAN_DOMAIN/open-data/data/," \
       -e "s,^ckan\.favicon =.*,ckan.favicon = /images/favicon.ico," \
       -e "s/^ckan\.site_id =.*/ckan.site_id = ecportal/" \
