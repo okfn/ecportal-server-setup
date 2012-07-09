@@ -1,2 +1,4 @@
 *.swp
 build/
+downloads/*.tgz
+downloads/*.tar.gz
