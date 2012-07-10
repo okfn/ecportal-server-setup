@@ -14,15 +14,15 @@ download_dependencies () {
   PREV_DIR=$PWD
   cd ../downloads
 
-  # echo 'Downloading solr'
-  # wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/lucene/solr/1.4.1/apache-solr-1.4.1.tgz
+  echo 'Downloading solr'
+  wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/lucene/solr/1.4.1/apache-solr-1.4.1.tgz
 
-  # echo 'Downloading EC ODP multilingual solr files'
-  # git clone https://github.com/okfn/ckanext-ecportal.git
-  # mv ckanext-ecportal/ckanext/ecportal/solr solr_schema
-  # tar -cf solr_schema.tar.gz solr_schema
-  # rm -rf solr_schema
-  # rm -rf ckanext-ecportal
+  echo 'Downloading EC ODP multilingual solr files'
+  git clone https://github.com/okfn/ckanext-ecportal.git
+  mv ckanext-ecportal/ckanext/ecportal/solr solr_schema
+  tar -cf solr_schema.tar.gz solr_schema
+  rm -rf solr_schema
+  rm -rf ckanext-ecportal
 
   echo 'Downloading elastic search'
   wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.tar.gz
