@@ -22,12 +22,6 @@ then
   echo 'ERROR: CKAN_BACKEND_SERVER environment variable is not set'
   exit 1
 fi
-
-if [[ `uname -a` =~ "x86_64" ]]; then
-  ARCH="x86_64"
-else
-  ARCH="i386"
-fi
  
 # Location of nginx within the CKAN_APPLICATION structure.
 NGINX_PRODUCT=$CKAN_APPLICATION/nginx
@@ -40,7 +34,7 @@ install_nginx () {
   echo '------------------------------------------'
 
   local rpm_file
-  rpm_file=$SCRIPTS_HOME/../rpms/nginx-1.2.2-1.el6.ngx.$ARCH.rpm
+  rpm_file=$SCRIPTS_HOME/../rpms/nginx-1.2.2-1.el6.ngx.x86_64.rpm
 
   echo "Installing from $rpm_file"
   rpm -i $rpm_file

@@ -28,10 +28,7 @@ download_dependencies () {
   wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.tar.gz
 
   cd ../rpms
-  echo 'Downloading nginx rpms'
-
-  # download rpms for both 64 and 32 bit, decide which to use when installing
-  wget http://nginx.org/packages/rhel/6/i386/RPMS/nginx-1.2.2-1.el6.ngx.i386.rpm
+  echo 'Downloading nginx rpm'
   wget http://nginx.org/packages/rhel/6/x86_64/RPMS/nginx-1.2.2-1.el6.ngx.x86_64.rpm
 
   cd $PREV_DIR
