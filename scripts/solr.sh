@@ -57,14 +57,13 @@ install_solr () {
   ln -s /etc/tomcat6 $TOMCAT_PRODUCT/etc
   ln -s /etc/init.d/tomcat6 $CKAN_APPLICATION/init.d/tomcat6
   
-  echo "Downloading at installing solr"
+  echo "Installing solr"
   PREV_DIR=$PWD
-  cd /tmp
-  wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/lucene/solr/1.4.1/apache-solr-1.4.1.tgz
+  cd $SCRIPTS_HOME/../downloads
   tar xzf apache-solr-1.4.1.tgz
   
-  cp /tmp/apache-solr-1.4.1/dist/apache-solr-1.4.1.war $TOMCAT_PRODUCT/lib/webapps/solr.war
-  cp -R /tmp/apache-solr-1.4.1/example/solr $SOLR_PRODUCT/solr/
+  cp $SCRIPTS_HOME/../downloads/apache-solr-1.4.1/dist/apache-solr-1.4.1.war $TOMCAT_PRODUCT/lib/webapps/solr.war
+  cp -R $SCRIPTS_HOME/../downloads/apache-solr-1.4.1/example/solr $SOLR_PRODUCT/solr/
 
   # Check if the file has already been modified.
   egrep "$SOLR_PRODUCT" $TOMCAT_PRODUCT/etc/tomcat6.conf
@@ -94,14 +93,10 @@ install_solr () {
   echo 'Installing multilingual solr schema       '
   echo '------------------------------------------'
 
-  # CKANs source contains multi-lingual related files necessary for
-  # solr.  So, we checkout CKAN in order to get those files.
-  echo 'Checking out a temporary copy of ckan'
-  cd /tmp
-  now=`date +%s`
-  git clone -b ${CKAN_VERSION} git://github.com/okfn/ckan.git ckan.$now
+  cd $SCRIPTS_HOME/../downloads
+  tar -xf solr_schema.tar.gz
   
-  cp /tmp/ckan.$now/ckanext/multilingual/solr/* $SOLR_PRODUCT/solr/conf/
+  cp solr_schema/* $SOLR_PRODUCT/solr/conf/
   /etc/init.d/tomcat6 restart
   sleep 5
   curl http://${CKAN_BACKEND_SERVER}:8983/solr/admin/ping

@@ -40,8 +40,8 @@ elasticsearch   soft    nofile          32000
 EOF
   
   PREV_DIR=$PWD
+  cp $SCRIPTS_HOME/../downloads/elasticsearch-0.19.4.tar.gz "$ES_PRODUCT"
   cd "$ES_PRODUCT"
-  wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.tar.gz
   tar xzf elasticsearch-0.19.4.tar.gz
   ln -s elasticsearch-0.19.4 elasticsearch
   mkdir -p ${ES_PRODUCT}/run
@@ -130,5 +130,4 @@ EOF
   $CKAN_APPLICATION/init.d/elasticsearch start
 
   cd "$PREV_DIR"
-
 }

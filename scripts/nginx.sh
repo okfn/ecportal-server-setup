@@ -39,16 +39,11 @@ install_nginx () {
   echo 'Installing nginx                          '
   echo '------------------------------------------'
 
-  cat <<EOF > /etc/yum.repos.d/nginx.repo
-[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/centos/6/$ARCH/
-gpgcheck=0
-enabled=1
-EOF
-  
-  yum update
-  yum install -y nginx
+  local rpm_file
+  rpm_file=$SCRIPTS_HOME/../rpms/nginx-1.2.2-1.el6.ngx.$ARCH.rpm
+
+  echo "Installing from $rpm_file"
+  rpm -i $rpm_file
   
   rename '.conf' '' /etc/nginx/conf.d/*.conf
 
@@ -76,8 +71,8 @@ http {
 
     access_log  /var/log/nginx/access.log  main;
 
-    proxy_cache_path /applications/ckan/nginx/cache levels=1:2 keys_zone=cache:30m max_size=200m;
-    proxy_temp_path /applications/ckan/nginx/proxy 1 2;
+    proxy_cache_path $NGINX_PRODUCT/cache levels=1:2 keys_zone=cache:30m max_size=200m;
+    proxy_temp_path $NGINX_PRODUCT/proxy 1 2;
 
     sendfile        on;
     #tcp_nopush     on;
@@ -138,6 +133,8 @@ EOF
   
   echo 'Installing into $CKAN_APPLICATION'
   mkdir -p $NGINX_PRODUCT
+  mkdir -p $NGINX_PRODUCT/cache
+  mkdir -p $NGINX_PRODUCT/proxy
   ln -s /etc/nginx $NGINX_PRODUCT/etc
   ln -s /etc/init.d/nginx $CKAN_APPLICATION/init.d/nginx
 
