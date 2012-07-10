@@ -18,8 +18,8 @@ on each machine, with the same config settings each time.
 
  1. You need a copy of these instructions, and the scripts that go with them.
     Extract the scripts folder to a working directory; eg. `/tmp/scripts`, and the
-    rpms folder to a working directory at the same level as the scripts, eg
-    `/tmp/rpms`.
+    rpms and downloads folders to a working directory at the same level as the scripts,
+    eg `/tmp/rpms` and `/tmp/downloads`.
 
  #. From the working directory, edit the `config` file.
 
@@ -69,11 +69,19 @@ Backend Services Installation
 
  1. First, ensure you have followed the Preliminary steps above.
 
- 2. From within `/tmp/scripts`, run the following **as root**: ::
+ #. From within `/tmp/downloads`, download the following CKAN dependencies: ::
+
+      yum install wget # if not already installed
+
+      wget http://s031.okserver.org/ecportal-downloads/apache-solr-1.4.1.tgz
+      wget http://s031.okserver.org/ecportal-downloads/solr_schema.tar.gz
+      wget http://s031.okserver.org/ecportal-downloads/elasticsearch-0.19.4.tar.gz
+
+ #. From within `/tmp/scripts`, run the following **as root**: ::
 
       bash ./install_backend_services.sh | tee ./backend_install.log
 
- 3. This will prompt you for a password for the `ecportal` user.  Other thatn that
+ #. This will prompt you for a password for the `ecportal` user. Other that that
     it should run without further prompts.
 
 This will install solr, postgres and elasticsearch.
@@ -109,9 +117,10 @@ Frontend Services Installation
 
       yum install wget # if not already installed
 
+      wget http://s031.okserver.org/ecportal-rpms/nginx-1.2.2-1.el6.ngx.x86_64.rpm
       wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm
 
-    This is an rpm of the python virtual environment, and is used to expediate
+    The latter is an rpm of the python virtual environment, and is used to expediate
     the install process.
 
  #. From within `/tmp/scripts`, run the following **as root**: ::
