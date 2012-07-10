@@ -2,3 +2,6 @@
 build/
 downloads/*.tgz
 downloads/*.tar.gz
+downloads/apache-solr-1.4.1
+downloads/solr_schema
+rpms/*.rpm
