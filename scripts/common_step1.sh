@@ -21,9 +21,6 @@ echo '------------------------------------------'
 echo 'Installing tools'
 echo '------------------------------------------'
 
-# Update local repository
-yum update -y
-
 # Install some necessary tools.
 yum install -y vim mercurial git wget subversion screen lynx policycoreutils-python python-setuptools
 

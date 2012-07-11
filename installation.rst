@@ -2,7 +2,7 @@
 EC Portal CKAN Installation
 ===========================
 
-This documents the steps to install CKAN on EC portal's machines.  The
+This documents the steps to install CKAN on EC ODP machines. The
 installation is broken into two parts: the back-end and the front-end boxes.
 It *is* possible to install both set of services on a single machine.
 
@@ -34,35 +34,6 @@ on each machine, with the same config settings each time.
     iii) `CKAN_DOMAIN` should be the domain name serving CKAN.
 
     iv)  All other options should be left as they are.
-
-Repositories
-------------
-
-These deployment scripts have been tested on CentOS 6.2 and a trial version of
-RHEL 6.2.  As such, it may be the case that some packages we assume that are
-available in the yum repositories, are not available in the enterprise
-repositories.  To this end, there are two scripts available for adding
-additional repositories: `configure_centos_repositories.sh` and
-`configure_epel_repositories.sh`.  When testing on a trial version of RHEL 6.2
-we found that only adding the epel repository was not enough to satisfy all the
-dependencies.  (At least the `git` package was missing; there may be more).  So
-**we recommend you attempt the installation without adding any extra
-repositories; and if that fails then add the centos repository**.  If you wish
-to add the epel repository as well, we've provided a script to do so, but it's
-optional.
-
-To use the provided repository scripts: ::
-
-  # within the working directory, eg. /tmp/scripts
-  source ./configure_centos_repositories.sh
-  configure_centos_repositories
-
-Or, for the epel repository: ::
-
-  # within the working directory, eg. /tmp/scripts
-  source ./configure_epel_repositories.sh
-  configure_epel_repositories
-
 
 Backend Services Installation
 =============================
@@ -141,8 +112,6 @@ installing CKAN and apache:
 .. include:: scripts/install_frontend_services.sh
    :code: bash
 
-(TODO: move apache installation/configuration into separate file)
-
 The nginx part is quite simple, and should be easy to follow.
 
 The CKAN installation is a bit more complicated.  The script is peppered with
@@ -174,3 +143,15 @@ comments as to what's being run, but roughly, it does the following:
      i)   Load the necessary python modules in the virtaulenv.
      ii)  Make connections to the databases.
 
+
+Checking that CKAN is installed
+===============================
+
+Your CKAN instance should now be available at
+http://localhost/open-data/data/
+
+To verify, go to this address in your browser or from the command line, run::
+
+    curl --user <http auth user name>:<http auth password> http://localhost/open-data/data/
+
+The CKAN homepage should be displayed.

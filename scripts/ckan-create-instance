@@ -121,6 +121,12 @@ fi
 ##     a2dissite 000-default
 ## fi
 
+echo "Create new apache root folder"
+mkdir -p $CKAN_APPLICATION/www
+
+echo "Ensure selinux permissions are set on new apache root folder"
+chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www
+
 echo "Overwriting the existing Apache config ..."
 ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER}
 
