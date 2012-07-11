@@ -232,7 +232,7 @@ EOF
 
 			<VirtualHost *:8008>
 			
-			    DocumentRoot /var/www/drupal
+			    DocumentRoot /applications/ecodp/users/ecodp/www/drupal
 			    ServerName ${ServerName}
 			    ServerAlias ${ServerName} localhost
 			    DirectoryIndex index.phtml index.html index.php index.htm
@@ -303,14 +303,14 @@ EOF
 			    WSGIPassAuthorization On
 			
 			    # Added by 10F
-			    <Directory /var/www/drupal>
+			    <Directory /applications/ecodp/users/ecodp/www/drupal>
 			        Options Indexes FollowSymLinks MultiViews
 			        AllowOverride All
 			        Order allow,deny
 			        allow from all
 			    </Directory>
 
-			    <Directory /var/www/uploads>
+			    <Directory /applications/ecodp/users/ecodp/www/uploads>
 			        Options Indexes FollowSymLinks MultiViews
 			        IndexOptions SuppressIcon
 			        AllowOverride All
@@ -318,36 +318,23 @@ EOF
 			        allow from all
 			    </Directory>
 					
-					Alias /open-data/data/uploads /var/www/uploads
+					Alias /open-data/data/uploads /applications/ecodp/users/ecodp/www/uploads
 
 			#    Alias /open-data /var/www/drupal
 			
 			    # Added by InfAI
-			    <Directory /applications/cubeviz>
+			    <Directory /applications/ecodp/users/ecodp/www/cubeviz>
 			        Options Indexes FollowSymLinks MultiViews
 			        AllowOverride All
 			        Order allow,deny
 			        Allow from all
 			    </Directory>
-			    Alias /open-data/apps/cubeviz /applications/cubeviz
-			    Alias /open-data/apps/semmap /applications/semmap
-			
-			    <Proxy *>
-			            Order allow,deny
-			            allow from all
-			    </Proxy>
-			
-			    ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
-			    ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
-			
-			    ProxyPass /open-data/conductor http://localhost:8890/conductor retry=0
-			    ProxyPassReverse /open-data/conductor http://localhost:8890/conductor
+			    Alias /open-data/apps/cubeviz /applications/ecodp/users/ecodp/www/cubeviz
+			    Alias /open-data/apps/semmap /applications/ecodp/users/ecodp/www/semmap
 			
 			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
 			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
 			
-			#    RewriteEngine on
-			#    RewriteRule ^open-data/(..)/data/(.*) /open-data/data/\$1/\$2 [L,QSA,PT]
 			</VirtualHost>
 
 		EOF
