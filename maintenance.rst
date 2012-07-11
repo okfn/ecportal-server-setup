@@ -176,7 +176,7 @@ To upgrade CKAN's source installation, follow these steps: ::
   # Restart apache
   /applications/ckan/users/system/init.d/httpd restart
 
-If the solr schema has been upgrade, then you'll need to 
+If the solr schema has been upgrade, then you'll need to
 
 Upgrading CKAN's extensions
 ===========================
@@ -226,11 +226,45 @@ There's a link to each service's init.d script in
 
   /applications/ckan/users/system/init.d/httpd restart
 
+Changing the HTTP Auth User
+===========================
+
+The HTTP Auth username/password is currently hardcoded into the file: ::
+
+  /applications/ecodp/users/ecodp/ckan/lib/ecodp/auth.py
+
+To change the username/password, edit this file and then restart apache: ::
+
+  /applications/ckan/users/system/init.d/httpd restart
+
+Adding CKAN Users
+=================
+
+Normal CKAN users and system administators can be added via the
+``paster user add`` and ``paster sysadmin add`` commands respectively.
+
+For example, to create a new sysadmin called ``admin``: ::
+
+  # Assuming initial config settings:
+  CKAN_INSTANCE=ecportal
+
+  # Activate the python virtualenv
+  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+
+  # Working in the CKAN or an extension directory
+  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
+
+  # Run the paster command, referencing the .ini file
+  paster sysadmin add admin -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+
+More information on CKAN user management can be found at:
+http://docs.ckan.org/en/latest/paster.html#user-create-and-manage-users
+
 Running QA tasks
 ================
 
 The QA tasks can be triggered by running a paster command: ::
-  
+
   # Assuming initial config settings:
   CKAN_INSTANCE=ecportal
 
@@ -259,5 +293,3 @@ In general, running a paster command consists of: ::
 
   # Run the paster command, referencing the .ini file
   paster {commands} -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
-
-
