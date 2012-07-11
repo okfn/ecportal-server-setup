@@ -143,3 +143,15 @@ comments as to what's being run, but roughly, it does the following:
      i)   Load the necessary python modules in the virtaulenv.
      ii)  Make connections to the databases.
 
+
+Checking that CKAN is installed
+===============================
+
+Your CKAN instance should now be available at
+http://localhost/open-data/data/
+
+To verify, go to this address in your browser or from the command line, run::
+
+    curl --user <http auth user name>:<http auth password> http://localhost/open-data/data/
+
+The CKAN homepage should be displayed.
