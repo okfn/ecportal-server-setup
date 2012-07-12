@@ -23,12 +23,12 @@ Briefly, the following services are installed:
   * CKAN
 
 And the application as a whole is installed in
-`/applications/ckan/users/system/`, with each of the above services having an
+`/applications/ecodp/users/ecodp/`, with each of the above services having an
 entry as a *product* within the application structure. Eg -
-`/applications/ckan/users/system/nginx`.  This base directory is refered to as
+`/applications/ecodp/users/ecodp/nginx`.  This base directory is refered to as
 `$CKAN_APPLICATION` in the install scripts: ::
 
-  CKAN_APPLICATION=/applications/ckan/users/system
+  CKAN_APPLICATION=/applications/ecodp/users/ecodp
 
 Solr (1.4.1)
 ============
@@ -123,16 +123,16 @@ This is installed into the python virtualenvironment associated with the CKAN
 instance.  It's configuration files; log files and run files (.pid and .sock
 files) are all found under `$SUPERVISOR_PRODUCT/{var/log, etc, var/run}`
 
-Supervisor is run under the ``ecportal`` user.
-The monitored celery tasks are run under ``ecportal`` as well.
+Supervisor is run under the ``ecodp`` user.
+The monitored celery tasks are run under ``ecodp`` as well.
 
 CKAN
 ====
 
 ::
 
-  CKAN_APPLICATION=/applications/ckan/users/system
-  CKAN_VERSION="release-v1.7"
+  CKAN_APPLICATION=/applications/ecodp/users/ecodp
+  CKAN_VERSION="release-v1.7.1-ecportal"
   CKAN_INSTALL_DIR=$CKAN_APPLICATION/ckan/lib
   CKAN_LIB=$CKAN_INSTALL_DIR
   CKAN_ETC=$CKAN_APPLICATION/ckan/etc
@@ -152,29 +152,29 @@ Upgrading CKAN
 To upgrade CKAN's source installation, follow these steps: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
-  CKAN_VERSION=release-v1.7
+  CKAN_INSTANCE=ecodp
+  CKAN_VERSION=release-v1.7.1-ecportal
 
   # Working in the CKAN source directory
-  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
 
   # Update the source code
   git fetch
   git merge origin/$CKAN_VERSION
 
   # Activate the python virtualenv
-  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+  source /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
 
   # Run any database migrations
-  paster db upgrade -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+  paster db upgrade -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
 
   # Update the solr schema (if necessary)
-  cp /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan/ckanext/multilingual/solr \
-     /applications/ckan/users/system/solr/solr/conf
-  /applications/ckan/users/system/init.d/tomcat6 restart
+  cp /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan/ckanext/multilingual/solr \
+     /applications/ecodp/users/ecodp/solr/solr/conf
+  /applications/ecodp/users/ecodp/init.d/tomcat6 restart
 
   # Restart apache
-  /applications/ckan/users/system/init.d/httpd restart
+  /applications/ecodp/users/ecodp/init.d/httpd restart
 
 If the solr schema has been upgrade, then you'll need to
 
@@ -185,20 +185,20 @@ Each of CKAN's extensions are source installations too, which means any one of
 them can be upgraded following a similar procedure to that above: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
+  CKAN_INSTANCE=ecodp
 
   # The extension we wish to upgrade, change as appropriate:
   CKAN_EXTENSION=ckanext-qa
 
   # Working in the CKAN source directory
-  cd/applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/${CKAN_EXTENSION}
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/${CKAN_EXTENSION}
 
   # Update the source code
   git fetch
   git merge origin master
 
   # Restart apache
-  /applications/ckan/users/system/init.d/httpd restart
+  /applications/ecodp/users/ecodp/init.d/httpd restart
 
 Rebuilding Search Index
 =======================
@@ -206,25 +206,25 @@ Rebuilding Search Index
 The search index is rebuilt using a paster command: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
+  CKAN_INSTANCE=ecodp
 
   # Activate the python virtualenv
-  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+  source /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
 
   # Working in the CKAN source directory
-  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
 
   # Run the paster command
-  paster search-index rebuild -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+  paster search-index rebuild -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
 
 Restarting services
 ===================
 
 There's a link to each service's init.d script in
-`/applications/ckan/users/system/init.d`.  Each one accepts `start`, `stop`,
+`/applications/ecodp/users/ecodp/init.d`.  Each one accepts `start`, `stop`,
 `status` and `restart`.  For example: ::
 
-  /applications/ckan/users/system/init.d/httpd restart
+  /applications/ecodp/users/ecodp/init.d/httpd restart
 
 Changing the HTTP Auth User
 ===========================
@@ -235,7 +235,7 @@ The HTTP Auth username/password is currently hardcoded into the file: ::
 
 To change the username/password, edit this file and then restart apache: ::
 
-  /applications/ckan/users/system/init.d/httpd restart
+  /applications/ecodp/users/ecodp/init.d/httpd restart
 
 Adding CKAN Users
 =================
@@ -246,16 +246,16 @@ Normal CKAN users and system administators can be added via the
 For example, to create a new sysadmin called ``admin``: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
+  CKAN_INSTANCE=ecodp
 
   # Activate the python virtualenv
-  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+  source /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
 
   # Working in the CKAN or an extension directory
-  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
 
   # Run the paster command, referencing the .ini file
-  paster sysadmin add admin -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+  paster sysadmin add admin -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
 
 More information on CKAN user management can be found at:
 http://docs.ckan.org/en/latest/paster.html#user-create-and-manage-users
@@ -266,16 +266,16 @@ Running QA tasks
 The QA tasks can be triggered by running a paster command: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
+  CKAN_INSTANCE=ecodp
 
   # Activate the python virtualenv
-  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+  source /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
 
   # Working in the qa source directory
-  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckanext-qa
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckanext-qa
 
   # Run the paster command
-  paster qa update --config /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+  paster qa update --config /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
 
 Running paster commands in general
 ==================================
@@ -283,13 +283,13 @@ Running paster commands in general
 In general, running a paster command consists of: ::
 
   # Assuming initial config settings:
-  CKAN_INSTANCE=ecportal
+  CKAN_INSTANCE=ecodp
 
   # Activate the python virtualenv
-  source /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
+  source /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/bin/activate
 
   # Working in the CKAN or an extension directory
-  cd /applications/ckan/users/system/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
+  cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
 
   # Run the paster command, referencing the .ini file
-  paster {commands} -c /applications/ckan/users/system/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+  paster {commands} -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
