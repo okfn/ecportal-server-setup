@@ -357,4 +357,14 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
   $CKAN_APPLICATION/init.d/nginx restart
   $CKAN_APPLICATION/init.d/supervisord restart
   $CKAN_APPLICATION/init.d/httpd restart
+
+  
+  echo '---------------------------------------------'
+  echo 'Creating rdf-export cronjob.'
+  echo '---------------------------------------------'
+
+  cat <<EOF | crontab -u $CKAN_USER -
+0 0 * * * $PASTER --plugin=ckan rdf-export -c $INI_FILE $RDF_EXPORT_DUMP_LOCATION
+EOF
+
 }

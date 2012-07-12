@@ -33,7 +33,10 @@ on each machine, with the same config settings each time.
 
     iii) `CKAN_DOMAIN` should be the domain name serving CKAN.
 
-    iv)  All other options should be left as they are.
+    iv)  The `RDF_EXPORT_DUMP_LOCATION` setting needs to be set to the location
+         of the directory that the daily rdf dumps should be exported to.
+
+    v)  All other options should be left as they are.
 
 Backend Services Installation
 =============================
