@@ -135,6 +135,12 @@ install_python_dependencies_from_rpm () {
 	local rpm_file
 	rpm_file=$SCRIPTS_HOME/../rpms/$PYENV_RPM
 
+  if [ ! -f $rpm_file ]
+  then
+    echo "ERROR: Couldn't find python dependency rpm in required location: $rpm_file"
+    exit 1
+  fi
+
 	echo 'Checking the rpm has been built for this installation...'
 	local num_files num_matching_files
 	num_files=`rpm -qpl $rpm_file  |  wc -l`
@@ -234,7 +240,7 @@ EOF
 
   source $PYENV/bin/activate
   source ./common.sh
-  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER
+  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION
 
   # Configure the new instance's ini file
   echo 'Setting database connection strings...'
@@ -351,4 +357,14 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
   $CKAN_APPLICATION/init.d/nginx restart
   $CKAN_APPLICATION/init.d/supervisord restart
   $CKAN_APPLICATION/init.d/httpd restart
+
+  
+  echo '---------------------------------------------'
+  echo 'Creating rdf-export cronjob.'
+  echo '---------------------------------------------'
+
+  cat <<EOF | crontab -u $CKAN_USER -
+0 0 * * * $PASTER --plugin=ckan rdf-export -c $INI_FILE $RDF_EXPORT_DUMP_LOCATION
+EOF
+
 }
