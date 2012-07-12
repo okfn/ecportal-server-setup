@@ -36,6 +36,12 @@ install_nginx () {
   local rpm_file
   rpm_file=$SCRIPTS_HOME/../rpms/nginx-1.2.2-1.el6.ngx.x86_64.rpm
 
+  if [ ! -f $rpm_file ]
+  then
+    echo "ERROR: Couldn't find nginx rpm in required location: $rpm_file"
+    exit 1
+  fi
+
   echo "Installing from $rpm_file"
   rpm -i $rpm_file
   
