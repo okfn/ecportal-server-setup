@@ -8,9 +8,9 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-if [ $# -lt 6 ]
+if [ $# -lt 7 ]
 then    
-    echo "ERROR: Wrong number of arguments. Expected: (instance name, hostname, local database [yes or no], ckan_lib_dir, ckan_conf_dir, ckan_user) e.g."
+    echo "ERROR: Wrong number of arguments. Expected: (instance name, hostname, local database [yes or no], ckan_lib_dir, ckan_conf_dir, ckan_user, ckan_application_dir) e.g."
     echo "       $0 std std.ckan.org yes /var/lib/ckan /etc/ckan"
     exit 1
 fi
@@ -23,6 +23,7 @@ CKAN_LIB=$4
 CKAN_ETC=$5
 
 CKAN_USER=$6
+CKAN_APPLICATION=$7
 
 # Check the LOCAL_DB variable
 
@@ -123,6 +124,10 @@ fi
 
 echo "Create new apache root folder"
 mkdir -p $CKAN_APPLICATION/www
+
+echo "Changing ownership of $CKAN_APPLICATION/www to $CKAN_USER"
+chown -R $CKAN_APPLICATION/www
+chgrp -R $CKAN_APPLICATION/www
 
 echo "Ensure selinux permissions are set on new apache root folder"
 chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www

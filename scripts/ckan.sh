@@ -135,6 +135,12 @@ install_python_dependencies_from_rpm () {
 	local rpm_file
 	rpm_file=$SCRIPTS_HOME/../rpms/$PYENV_RPM
 
+  if [ ! -f $rpm_file ]
+  then
+    echo "ERROR: Couldn't find python dependency rpm in required location: $rpm_file"
+    exit 1
+  fi
+
 	echo 'Checking the rpm has been built for this installation...'
 	local num_files num_matching_files
 	num_files=`rpm -qpl $rpm_file  |  wc -l`
@@ -162,14 +168,24 @@ install_ckan () {
   echo '------------------------------------------'
   echo 'Installing dependencies                   '
   echo '------------------------------------------'
-  
+
   # Install direct dependencies of CKAN
-  yum install -y python postgresql-devel postgresql postgresql-server libxml2 libxslt gcc gcc-c++ glibc-devel make python-devel libxml2 libxml2-devel libxslt-devel mod_wsgi
-  
+  yum install -y python postgresql libxml2 libxslt mod_wsgi
+
   if [[ $? -ne 0 ]]; then
     echo 'Could not install dependencies from the configured yum repos'
     exit 1
   fi
+
+  if [ "no" == "$PACKAGE_INSTALL" ]
+	then
+    echo "Installing further packages required to build CKAN's python dependencies"
+    yum install -y python postgresql-devel postgresql libxml2 libxslt gcc gcc-c++ glibc-devel make python-devel libxml2 libxml2-devel libxslt-devel mod_wsgi
+    if [[ $? -ne 0 ]]; then
+      echo 'Could not install further dependencies from the configured yum repos'
+      exit 1
+    fi
+	fi
 
   echo '------------------------------------------'
   echo 'Setting up apache'
@@ -234,7 +250,7 @@ EOF
 
   source $PYENV/bin/activate
   source ./common.sh
-  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER
+  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION
 
   # Configure the new instance's ini file
   echo 'Setting database connection strings...'
@@ -329,7 +345,13 @@ qa.organisations = false\\
   mkdir -p $CKAN_LIB/$CKAN_INSTANCE/file-storage
   chown apache -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
   chgrp $CKAN_USER -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
-  $PIP install pairtree
+
+  if [ "no" == "$PACKAGE_INSTALL" ]
+  then
+    # Install pairtree from source if required.
+    $PIP install pairtree
+  fi
+
   sed -e "/^\[app:main\]$/ a\
 ofs.impl = pairtree\\
 ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
@@ -351,4 +373,14 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
   $CKAN_APPLICATION/init.d/nginx restart
   $CKAN_APPLICATION/init.d/supervisord restart
   $CKAN_APPLICATION/init.d/httpd restart
+
+  
+  echo '---------------------------------------------'
+  echo 'Creating rdf-export cronjob.'
+  echo '---------------------------------------------'
+
+  cat <<EOF | crontab -u $CKAN_USER -
+0 0 * * * $PASTER --plugin=ckan rdf-export -c $INI_FILE $RDF_EXPORT_DUMP_LOCATION
+EOF
+
 }

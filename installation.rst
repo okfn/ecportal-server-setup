@@ -11,10 +11,9 @@ Preliminaries
 
 **NOTE**: These scripts assume you are running as **root**.
 
-If you are installing both backend services and frontend service on the same
-machine, then you only need to setup the following once.  If installing on two
-separate machines, then the following preliminary steps need to be carried out
-on each machine, with the same config settings each time.
+The following preliminary steps need to be carried out on **both** the
+front-end and the back-end machines; with the same configuration settings each
+time.
 
  1. You need a copy of these instructions, and the scripts that go with them.
     Extract the scripts folder to a working directory; eg. `/tmp/scripts`, and the
@@ -33,7 +32,10 @@ on each machine, with the same config settings each time.
 
     iii) `CKAN_DOMAIN` should be the domain name serving CKAN.
 
-    iv)  All other options should be left as they are.
+    iv)  The `RDF_EXPORT_DUMP_LOCATION` setting needs to be set to the location
+         of the directory that the daily rdf dumps should be exported to.
+
+    v)  All other options should be left as they are.
 
 Backend Services Installation
 =============================
@@ -52,7 +54,7 @@ Backend Services Installation
 
       bash ./install_backend_services.sh | tee ./backend_install.log
 
- #. This will prompt you for a password for the `ecportal` user. Other that that
+ #. This will prompt you for a password for the `ecodp` user. Other that that
     it should run without further prompts.
 
 This will install solr, postgres and elasticsearch.
@@ -64,25 +66,10 @@ the following ports are available to the frontend machine on your network:
  postgresql    : 5432
  elasticsearch : 9200
 
-Overview of backend installation
---------------------------------
-
-The steps for each service are in separate files, `solr.sh`, `postgresql.sh`
-and `elasticsearch.sh`.  It should be obvious from the
-`install_backend_services.sh` script how to run each of these manually in
-turn if wished:
-
-.. include:: scripts/install_backend_services.sh
-   :code: bash
-
-And each script is documented in-line with explanations of what's being
-installed/configured.  They all require the environment variables set in
-`source config`.
-
 Frontend Services Installation
 ==============================
 
- 1. First, ensure you have followed the preliminary steps above.
+ 1. First, **ensure you have followed the preliminary steps above.**
 
  #. From within `/tmp/rpms`, download the packaged-up python dependencies: ::
 
@@ -98,50 +85,9 @@ Frontend Services Installation
 
       bash ./install_frontend_services.sh | tee frontend_install.log
 
- #. This will prompt you for a password for the `ecportal` user if you are running
-    this on a separate machine to the backend.
+ #. This will prompt you for a password for the `ecodp` user.
 
 This will install and configure nginx, apache and CKAN.
-
-Overview of frontend installation
----------------------------------
-
-The frontend installation is broken into 2 parts: installing nginx, and
-installing CKAN and apache:
-
-.. include:: scripts/install_frontend_services.sh
-   :code: bash
-
-The nginx part is quite simple, and should be easy to follow.
-
-The CKAN installation is a bit more complicated.  The script is peppered with
-comments as to what's being run, but roughly, it does the following:
-
-  1. Installs and configures apache2
-
-  #. Creates a new python virtualenv.
-
-  #. Installs CKAN and it's python dependencies into that virtual env.
-
-  #. Creates a new ckan instance, running in the new virtual env.
-
-  #. Installs the ecportal extension, and it's dependant ckan extensions (qa,
-     archiver and datastorer).
-
-  #. Modifies the generated CKAN configuration file with settings particular
-     for ecportal, including the correct connection strings for solr and postgres.
-
-  #. Runs some commands to load initial data for the installation, ie - the
-     ecportal vocabs.
-
-  #. Installs and configures celery to be monitored by supervisord.
-
-  #. Configures the file-upload storage.
-
-  #. Ensures selinux permissions are correct for allowing apache to:
-
-     i)   Load the necessary python modules in the virtaulenv.
-     ii)  Make connections to the databases.
 
 
 Checking that CKAN is installed

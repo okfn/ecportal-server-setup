@@ -5,7 +5,7 @@
 ## Source this file, and run download_dependencies()
 
 download_dependencies () {
-  sudo yum install wget
+  yum install wget
 
   echo '------------------------------------------'
   echo 'Downloading Dependency Files              '
