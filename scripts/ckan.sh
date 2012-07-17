@@ -168,14 +168,24 @@ install_ckan () {
   echo '------------------------------------------'
   echo 'Installing dependencies                   '
   echo '------------------------------------------'
-  
+
   # Install direct dependencies of CKAN
-  yum install -y python postgresql-devel postgresql libxml2 libxslt gcc gcc-c++ glibc-devel make python-devel libxml2 libxml2-devel libxslt-devel mod_wsgi
-  
+  yum install -y python postgresql libxml2 libxslt mod_wsgi
+
   if [[ $? -ne 0 ]]; then
     echo 'Could not install dependencies from the configured yum repos'
     exit 1
   fi
+
+  if [ "no" == "$PACKAGE_INSTALL" ]
+	then
+    echo "Installing further packages required to build CKAN's python dependencies"
+    yum install -y python postgresql-devel postgresql libxml2 libxslt gcc gcc-c++ glibc-devel make python-devel libxml2 libxml2-devel libxslt-devel mod_wsgi
+    if [[ $? -ne 0 ]]; then
+      echo 'Could not install further dependencies from the configured yum repos'
+      exit 1
+    fi
+	fi
 
   echo '------------------------------------------'
   echo 'Setting up apache'
