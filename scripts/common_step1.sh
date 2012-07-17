@@ -11,7 +11,7 @@ echo "Creating $CKAN_USER user"
 echo '------------------------------------------'
 id $CKAN_USER
 if [[ $? -ne 0 ]]; then
-  sudo groupadd --system $CKAN_USER
+  groupadd --system $CKAN_USER
   useradd -d /home/$CKAN_USER -m -s /bin/bash --gid $CKAN_USER $CKAN_USER
   echo "Please create a password for the $CKAN_USER user..."
   passwd $CKAN_USER

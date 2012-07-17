@@ -7,20 +7,20 @@ ckan_log () {
 ckan_set_log_file_permissions () {
     local INSTANCE
     INSTANCE=$1
-    sudo chown apache:ckan${INSTANCE} /var/log/ckan/${INSTANCE}
-    sudo chmod g+w /var/log/ckan/${INSTANCE}
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}1.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}2.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}3.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}4.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}5.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}6.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}7.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}8.log
-    sudo touch /var/log/ckan/${INSTANCE}/${INSTANCE}9.log
-    sudo chmod g+w /var/log/ckan/${INSTANCE}/${INSTANCE}*.log
-    sudo chown apache:ckan${INSTANCE} /var/log/ckan/${INSTANCE}/${INSTANCE}*.log
+    chown apache:ckan${INSTANCE} /var/log/ckan/${INSTANCE}
+    chmod g+w /var/log/ckan/${INSTANCE}
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}1.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}2.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}3.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}4.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}5.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}6.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}7.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}8.log
+    touch /var/log/ckan/${INSTANCE}/${INSTANCE}9.log
+    chmod g+w /var/log/ckan/${INSTANCE}/${INSTANCE}*.log
+    chown apache:ckan${INSTANCE} /var/log/ckan/${INSTANCE}/${INSTANCE}*.log
 }
 
 ckan_ensure_users_and_groups () {
@@ -37,14 +37,14 @@ ckan_ensure_users_and_groups () {
     COMMAND_OUTPUT=`cat /etc/group | grep "ckan${INSTANCE}:"`
     if ! [[ "$COMMAND_OUTPUT" =~ "ckan${INSTANCE}:" ]] ; then
         echo "Creating the 'ckan${INSTANCE}' group ..." 
-        sudo groupadd --system "ckan${INSTANCE}"
+        groupadd --system "ckan${INSTANCE}"
         echo "Adding the $CKAN_USER user to it..."
-        sudo usermod --append --groups "ckan${INSTANCE}" $CKAN_USER
+        usermod --append --groups "ckan${INSTANCE}" $CKAN_USER
     fi
     COMMAND_OUTPUT=`cat /etc/passwd | grep "ckan${INSTANCE}:"`
     if ! [[ "$COMMAND_OUTPUT" =~ "ckan${INSTANCE}:" ]] ; then
         echo "Creating the 'ckan${INSTANCE}' user ..." 
-        sudo useradd --system  --gid "ckan${INSTANCE}" --home $CKAN_LIB/${INSTANCE} -M  --shell /usr/sbin/nologin ckan${INSTANCE}
+        useradd --system  --gid "ckan${INSTANCE}" --home $CKAN_LIB/${INSTANCE} -M  --shell /usr/sbin/nologin ckan${INSTANCE}
     fi
 }
 
@@ -59,9 +59,9 @@ ckan_make_ckan_directories () {
         mkdir -p -m 0755 $CKAN_ETC/${INSTANCE}
         mkdir -p -m 0750 $CKAN_LIB/${INSTANCE}{,/static}
         mkdir -p -m 0770 /var/{backup,log}/ckan/${INSTANCE} $CKAN_LIB/${INSTANCE}/{data,sstore,static/dump}
-        sudo chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}
-        sudo chown apache:ckan${INSTANCE} /var/{backup,log}/ckan/${INSTANCE} $CKAN_LIB/${INSTANCE} $CKAN_LIB/${INSTANCE}/{data,sstore,static/dump}
-        sudo chmod g+w /var/log/ckan/${INSTANCE} $CKAN_LIB/${INSTANCE}/{data,sstore,static/dump}
+        chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}
+        chown apache:ckan${INSTANCE} /var/{backup,log}/ckan/${INSTANCE} $CKAN_LIB/${INSTANCE} $CKAN_LIB/${INSTANCE}/{data,sstore,static/dump}
+        chmod g+w /var/log/ckan/${INSTANCE} $CKAN_LIB/${INSTANCE}/{data,sstore,static/dump}
     fi
 }
 
@@ -113,7 +113,7 @@ ckan_create_config_file () {
             -e "s,\"ckan\.log\",\"/var/log/ckan/${INSTANCE}/${INSTANCE}.log\"," \
             -e "s,#solr_url = http://127.0.0.1:8983/solr,solr_url = http://127.0.0.1:8983/solr," \
             -i $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
-        sudo chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
+        chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
     fi
 }
 
@@ -128,14 +128,13 @@ ckan_add_or_replace_database_user () {
     else
         INSTANCE=$1
         password=$2
-        COMMAND_OUTPUT=`sudo -u postgres -i psql -c "SELECT 'True' FROM pg_user WHERE usename='${INSTANCE}'"`
+        COMMAND_OUTPUT=`su - postgres -c "psql -c \"SELECT 'True' FROM pg_user WHERE usename='${INSTANCE}'\""`
         if ! [[ "$COMMAND_OUTPUT" =~ True ]] ; then
             echo "Creating the ${INSTANCE} user ..."
-            sudo -u postgres -i createuser -S -D -R ${INSTANCE}
-            # sudo -u postgres -i psql -c "CREATE USER \"${INSTANCE}\" WITH PASSWORD '${password}'"
+            su - postgres -c "createuser -S -D -R ${INSTANCE}"
         else
             echo "Setting the ${INSTANCE} user password ..."
-            sudo -u postgres -i psql -c "ALTER USER \"${INSTANCE}\" WITH PASSWORD '${password}'"
+            su - postgres -c "psql -c \"ALTER USER \\\"${INSTANCE}\\\" WITH PASSWORD '${password}'\""
         fi
     fi
 }
@@ -148,11 +147,10 @@ ckan_ensure_db_exists () {
         exit 1
     else
         INSTANCE=$1
-        COMMAND_OUTPUT=`sudo -u postgres -i psql -c "select datname from pg_database where datname='$INSTANCE'"`
+        COMMAND_OUTPUT=`su - postgres -c "psql -c \"select datname from pg_database where datname='$INSTANCE'\""`
         if ! [[ "$COMMAND_OUTPUT" =~ ${INSTANCE} ]] ; then
             echo "Creating the database ..."
-            sudo -u postgres -i createdb -O ${INSTANCE} ${INSTANCE}
-            ## paster --plugin=ckan db init --config=$CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
+            su - postgres -c "createdb -O ${INSTANCE} ${INSTANCE}"
         fi
     fi
 }
@@ -170,15 +168,6 @@ ckan_create_wsgi_handler () {
 
         if [ ! -f "$CKAN_LIB/${INSTANCE}/wsgi.py" ]
         then
-            ## echo "Pip used: `which pip`"
-            ## sudo chown -R ckan${INSTANCE}:ckan${INSTANCE} $CKAN_LIB/${INSTANCE}/pyenv
-            ## sudo -u ckan${INSTANCE} virtualenv --setuptools $CKAN_LIB/${INSTANCE}/pyenv
-            ## echo "Attempting to install 'pip' 1.0 from pypi.python.org into pyenv to be used for extensions ..."
-            ## sudo -u ckan${INSTANCE} $CKAN_LIB/${INSTANCE}/pyenv/bin/easy_install --upgrade "pip>=1.0" "pip<=1.0.99"
-            ## echo "done."
-            ## echo "Attempting to install 'paster' pypi.python.org into pyenv ..."
-            ## sudo -u ckan${INSTANCE} $CKAN_LIB/${INSTANCE}/pyenv/bin/easy_install --ignore-installed "pastescript"
-            ## echo "done."
             cat <<- EOF > $CKAN_LIB/${INSTANCE}/packaging_version.txt
 				1.7
 			EOF
@@ -202,7 +191,7 @@ ckan_create_wsgi_handler () {
 				from apachemiddleware import MaintenanceResponse
 				application = MaintenanceResponse(application)
 			EOF
-        sudo chmod +x $CKAN_LIB/${INSTANCE}/wsgi.py
+        chmod +x $CKAN_LIB/${INSTANCE}/wsgi.py
         fi
    fi
 }
