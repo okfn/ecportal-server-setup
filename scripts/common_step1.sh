@@ -22,7 +22,7 @@ echo 'Installing tools'
 echo '------------------------------------------'
 
 # Install some necessary tools.
-yum install -y vim mercurial git wget subversion screen lynx policycoreutils-python python-setuptools
+yum install -y git wget policycoreutils-python python-setuptools
 
 if [[ $? -ne 0 ]]; then
   echo 'Could not install dependencies from the configured yum repos'
