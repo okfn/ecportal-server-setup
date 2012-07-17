@@ -125,6 +125,10 @@ fi
 echo "Create new apache root folder"
 mkdir -p $CKAN_APPLICATION/www
 
+echo "Changing ownership of $CKAN_APPLICATION/www to $CKAN_USER"
+chown -R $CKAN_APPLICATION/www
+chgrp -R $CKAN_APPLICATION/www
+
 echo "Ensure selinux permissions are set on new apache root folder"
 chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www
 
