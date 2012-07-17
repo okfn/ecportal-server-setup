@@ -11,7 +11,7 @@ echo "Creating $CKAN_USER user"
 echo '------------------------------------------'
 id $CKAN_USER
 if [[ $? -ne 0 ]]; then
-  sudo groupadd --system $CKAN_USER
+  groupadd --system $CKAN_USER
   useradd -d /home/$CKAN_USER -m -s /bin/bash --gid $CKAN_USER $CKAN_USER
   echo "Please create a password for the $CKAN_USER user..."
   passwd $CKAN_USER
@@ -22,7 +22,7 @@ echo 'Installing tools'
 echo '------------------------------------------'
 
 # Install some necessary tools.
-yum install -y vim mercurial git wget subversion screen lynx policycoreutils-python python-setuptools
+yum install -y git wget policycoreutils-python python-setuptools
 
 if [[ $? -ne 0 ]]; then
   echo 'Could not install dependencies from the configured yum repos'

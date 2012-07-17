@@ -15,6 +15,35 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+echo '------------------------------------------'
+echo 'Checking connections to backend servives.'
+echo '------------------------------------------'
+
+echo "Checking connection to postgresql on ${CKAN_BACKEND_SERVER} (DB: ${INSTANCE})"
+psql --host=${CKAN_BACKEND_SERVER} --port=5432 ecodp ecodp --list
+
+if [[ $? -ne 0 ]]; then
+  echo 'ERROR: Cannot connect to postgresql database.'
+  exit 1
+fi
+
+echo "Checking connection to elasticsearch on ${CKAN_BACKEND_SERVER}"
+curl http://${CKAN_BACKEND_SERVER}:8983/solr/admin/ping
+
+if [[ $? -ne 0 ]]; then
+  echo 'ERROR: Cannot ping solr database.'
+  exit 1
+fi
+
+echo "Checking connection to solr on ${CKAN_BACKEND_SERVER}"
+curl http://${CKAN_BACKEND_SERVER}:9200/_status
+
+if [[ $? -ne 0 ]]; then
+  echo 'ERROR: Cannot ping elasticsearch.'
+  exit 1
+fi
+
+
 source common_step1.sh
 
 source nginx.sh
