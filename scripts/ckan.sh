@@ -345,7 +345,13 @@ qa.organisations = false\\
   mkdir -p $CKAN_LIB/$CKAN_INSTANCE/file-storage
   chown apache -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
   chgrp $CKAN_USER -R $CKAN_LIB/$CKAN_INSTANCE/file-storage
-  $PIP install pairtree
+
+  if [ "no" == "$PACKAGE_INSTALL" ]
+  then
+    # Install pairtree from source if required.
+    $PIP install pairtree
+  fi
+
   sed -e "/^\[app:main\]$/ a\
 ofs.impl = pairtree\\
 ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
