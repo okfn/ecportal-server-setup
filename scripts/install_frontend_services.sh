@@ -20,7 +20,7 @@ echo 'Checking connections to backend servives.'
 echo '------------------------------------------'
 
 echo "Checking connection to postgresql on ${CKAN_BACKEND_SERVER} (DB: ${INSTANCE})"
-psql --host=${CKAN_BACKEND_SERVER} --port=5432 ecodp ecodp --list
+psql --host=${CKAN_BACKEND_SERVER} --port=5432 ${INSTANCE} ${INSTANCE} --list
 
 if [[ $? -ne 0 ]]; then
   echo 'ERROR: Cannot connect to postgresql database.'
