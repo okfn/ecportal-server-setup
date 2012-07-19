@@ -72,7 +72,7 @@ install_postgresql () {
     ## echo "host  all all ${CKAN_BACKEND_SERVER}  ident" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
     # remove all previous reference to an existing range of trusted IPs
-    sed -e "/^host  all all 158\.167\.97\.0/23 trust$/d" \
+    sed -e "/^host  all all 158\.167\.97\.0\/23 trust$/d" \
         -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
     echo "host  all all 158.167.97.0/23  trust" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
