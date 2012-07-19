@@ -52,7 +52,7 @@ Backend Services Installation
 
  #. From within `/tmp/scripts`, run the following **as root**: ::
 
-      bash ./install_backend_services.sh | tee ./backend_install.log
+      bash ./install_backend_services.sh 2>&1 | tee ./backend_install.log
 
  #. This will prompt you for a password for the `ecodp` user. Other that that
     it should run without further prompts.
@@ -83,7 +83,7 @@ Frontend Services Installation
 
  #. From within `/tmp/scripts`, run the following **as root**: ::
 
-      bash ./install_frontend_services.sh | tee frontend_install.log
+      bash ./install_frontend_services.sh 2>&1 | tee frontend_install.log
 
  #. This will prompt you for a password for the `ecodp` user.
 
