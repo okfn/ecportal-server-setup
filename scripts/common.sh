@@ -198,14 +198,15 @@ ckan_create_wsgi_handler () {
 
 ckan_overwrite_apache_config () {
     local INSTANCE ServerName CKAN_USER
-    if [ "X$1" = "X" ] || [ "X$2" = "X" ] || [ "X$3" = "X" ] ; then
-        echo "ERROR: call the function overwrite_apache_config function with an INSTANCE name, the server name and the ckan username e.g." 
-        echo "       std uat.ec.ckan.org ecportal"
+    if [ "X$1" = "X" ] || [ "X$2" = "X" ] || [ "X$3" = "X" ] || [ "X$4" = "X" ] ; then
+        echo "ERROR: call the function overwrite_apache_config function with an INSTANCE name, the server name, the ckan username, and the ckan application directory e.g." 
+        echo "       std uat.ec.ckan.org ecportal /applications/ecodp/users/ecodp"
         exit 1
     else
-        INSTANCE=$1
-        ServerName=$2
-        CKAN_USER=$3
+        local INSTANCE=$1
+        local ServerName=$2
+        local CKAN_USER=$3
+        local CKAN_APPLICATION=$4
 
         echo "Creating auth.py file instance ${INSTANCE}"
         cat << EOF > $CKAN_LIB/${INSTANCE}/auth.py
@@ -221,7 +222,7 @@ EOF
 
 			<VirtualHost *:8008>
 			
-			    DocumentRoot /applications/ecodp/users/ecodp/www/drupal
+			    DocumentRoot ${CKAN_APPLICATION}/www/drupal
 			    ServerName ${ServerName}
 			    ServerAlias ${ServerName} localhost
 			    DirectoryIndex index.phtml index.html index.php index.htm
@@ -292,14 +293,14 @@ EOF
 			    WSGIPassAuthorization On
 			
 			    # Added by 10F
-			    <Directory /applications/ecodp/users/ecodp/www/drupal>
+			    <Directory ${CKAN_APPLICATION}/www/drupal>
 			        Options Indexes FollowSymLinks MultiViews
 			        AllowOverride All
 			        Order allow,deny
 			        allow from all
 			    </Directory>
 
-			    <Directory /applications/ecodp/users/ecodp/www/uploads>
+			    <Directory ${CKAN_APPLICATION}/www/uploads>
 			        Options Indexes FollowSymLinks MultiViews
 			        IndexOptions SuppressIcon
 			        AllowOverride All
@@ -307,19 +308,19 @@ EOF
 			        allow from all
 			    </Directory>
 					
-					Alias /open-data/data/uploads /applications/ecodp/users/ecodp/www/uploads
+					Alias /open-data/data/uploads ${CKAN_APPLICATION}/www/uploads
 
 			#    Alias /open-data /var/www/drupal
 			
 			    # Added by InfAI
-			    <Directory /applications/ecodp/users/ecodp/www/cubeviz>
+			    <Directory ${CKAN_APPLICATION}/www/cubeviz>
 			        Options Indexes FollowSymLinks MultiViews
 			        AllowOverride All
 			        Order allow,deny
 			        Allow from all
 			    </Directory>
-			    Alias /open-data/apps/cubeviz /applications/ecodp/users/ecodp/www/cubeviz
-			    Alias /open-data/apps/semmap /applications/ecodp/users/ecodp/www/semmap
+			    Alias /open-data/apps/cubeviz ${CKAN_APPLICATION}/www/cubeviz
+			    Alias /open-data/apps/semmap ${CKAN_APPLICATION}/www/semmap
 			
 			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
 			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined

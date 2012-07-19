@@ -133,7 +133,7 @@ echo "Ensure selinux permissions are set on new apache root folder"
 chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www
 
 echo "Overwriting the existing Apache config ..."
-ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER}
+ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER} ${CKAN_APPLICATION}
 
 ## # Make sure mod_rewrite is enabled
 ## if ! [ -f /etc/apache2/mods-enabled/rewrite.load ] ; then
