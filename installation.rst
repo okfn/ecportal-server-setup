@@ -2,8 +2,8 @@
 EC Portal CKAN Installation
 ===========================
 
-This documents the steps to install CKAN on EC ODP machines. The
-installation is broken into two parts: the back-end and the front-end boxes.
+This documents the steps to install CKAN on EC ODP servers. The
+installation is broken into two parts: the back-end and the front-end.
 It *is* possible to install both set of services on a single machine.
 
 Preliminaries
@@ -18,7 +18,7 @@ time.
  1. You need a copy of these instructions, and the scripts that go with them.
     Extract the scripts folder to a working directory; eg. `/tmp/scripts`, and the
     rpms and downloads folders to a working directory at the same level as the scripts,
-    eg `/tmp/rpms` and `/tmp/downloads`.
+    e.q. `/tmp/rpms` and `/tmp/downloads`.
 
  #. From the working directory, edit the `config` file.
 
@@ -30,27 +30,16 @@ time.
          the frontend services are configured correctly.  If you are installing
          everything on the same machine, then leave it as `0.0.0.0`.
 
-    iii) `CKAN_DOMAIN` should be the domain name serving CKAN.
+    iii) `CKAN_DOMAIN` should be the domain name serving CKAN (on production, ec.europa.eu)
 
-    iv)  The `RDF_EXPORT_DUMP_LOCATION` setting needs to be set to the location
-         of the directory that the daily rdf dumps should be exported to.
-
-    v)  All other options should be left as they are.
+    iv)  All other options should be left as they are.
 
 Backend Services Installation
 =============================
 
  1. First, ensure you have followed the Preliminary steps above.
 
- #. From within `/tmp/downloads`, download the following CKAN dependencies: ::
-
-      yum install wget # if not already installed
-
-      wget http://s031.okserver.org/ecportal-downloads/apache-solr-1.4.1.tgz
-      wget http://s031.okserver.org/ecportal-downloads/solr_schema.tar.gz
-      wget http://s031.okserver.org/ecportal-downloads/elasticsearch-0.19.4.tar.gz
-
- #. From within `/tmp/scripts`, run the following **as root**: ::
+ #. From within `./scripts`, run the following: ::
 
       bash ./install_backend_services.sh 2>&1 | tee ./backend_install.log
 
@@ -70,16 +59,6 @@ Frontend Services Installation
 ==============================
 
  1. First, **ensure you have followed the preliminary steps above.**
-
- #. From within `/tmp/rpms`, download the packaged-up python dependencies: ::
-
-      yum install wget # if not already installed
-
-      wget http://s031.okserver.org/ecportal-rpms/nginx-1.2.2-1.el6.ngx.x86_64.rpm
-      wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm
-
-    The latter is an rpm of the python virtual environment, and is used to expediate
-    the install process.
 
  #. From within `/tmp/scripts`, run the following **as root**: ::
 

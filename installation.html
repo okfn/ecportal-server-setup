@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" />
 <title>EC Portal CKAN Installation</title>
 <style type="text/css">
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 7434 2012-05-11 21:06:27Z milde $
+:Id: $Id: html4css1.css 7056 2011-06-17 10:50:48Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
@@ -249,17 +249,9 @@ pre.address {
   margin-top: 0 ;
   font: inherit }
 
-pre.literal-block, pre.doctest-block, pre.math, pre.code {
+pre.literal-block, pre.doctest-block, pre.math {
   margin-left: 2em ;
   margin-right: 2em }
-
-pre.code .ln { /* line numbers */
-  color: grey;
-}
-
-.code {
-  background-color: #eeeeee
-}
 
 span.classifier {
   font-family: sans-serif ;
@@ -325,8 +317,8 @@ ul.auto-toc {
 <div class="document" id="ec-portal-ckan-installation">
 <h1 class="title">EC Portal CKAN Installation</h1>
 
-<p>This documents the steps to install CKAN on EC ODP machines. The
-installation is broken into two parts: the back-end and the front-end boxes.
+<p>This documents the steps to install CKAN on EC ODP servers. The
+installation is broken into two parts: the back-end and the front-end.
 It <em>is</em> possible to install both set of services on a single machine.</p>
 <div class="section" id="preliminaries">
 <h1>Preliminaries</h1>
@@ -339,7 +331,7 @@ time.</p>
 <li>You need a copy of these instructions, and the scripts that go with them.
 Extract the scripts folder to a working directory; eg. <cite>/tmp/scripts</cite>, and the
 rpms and downloads folders to a working directory at the same level as the scripts,
-eg <cite>/tmp/rpms</cite> and <cite>/tmp/downloads</cite>.</li>
+e.q. <cite>/tmp/rpms</cite> and <cite>/tmp/downloads</cite>.</li>
 <li>From the working directory, edit the <cite>config</cite> file.<ol class="lowerroman">
 <li>The <cite>CKAN_DATABASE_PASSWORD</cite> setting needs setting to a randomly
 chosen password that will be used for CKAN user setup for postgresql.</li>
@@ -347,9 +339,7 @@ chosen password that will be used for CKAN user setup for postgresql.</li>
 backend services will be installed on.  This is used to ensure that
 the frontend services are configured correctly.  If you are installing
 everything on the same machine, then leave it as <cite>0.0.0.0</cite>.</li>
-<li><cite>CKAN_DOMAIN</cite> should be the domain name serving CKAN.</li>
-<li>The <cite>RDF_EXPORT_DUMP_LOCATION</cite> setting needs to be set to the location
-of the directory that the daily rdf dumps should be exported to.</li>
+<li><cite>CKAN_DOMAIN</cite> should be the domain name serving CKAN (on production, ec.europa.eu)</li>
 <li>All other options should be left as they are.</li>
 </ol>
 </li>
@@ -362,16 +352,7 @@ of the directory that the daily rdf dumps should be exported to.</li>
 <ol class="arabic">
 <li><p class="first">First, ensure you have followed the Preliminary steps above.</p>
 </li>
-<li><p class="first">From within <cite>/tmp/downloads</cite>, download the following CKAN dependencies:</p>
-<pre class="literal-block">
-yum install wget # if not already installed
-
-wget http://s031.okserver.org/ecportal-downloads/apache-solr-1.4.1.tgz
-wget http://s031.okserver.org/ecportal-downloads/solr_schema.tar.gz
-wget http://s031.okserver.org/ecportal-downloads/elasticsearch-0.19.4.tar.gz
-</pre>
-</li>
-<li><p class="first">From within <cite>/tmp/scripts</cite>, run the following <strong>as root</strong>:</p>
+<li><p class="first">From within <cite>./scripts</cite>, run the following:</p>
 <pre class="literal-block">
 bash ./install_backend_services.sh | tee ./backend_install.log
 </pre>
@@ -394,16 +375,6 @@ elasticsearch : 9200</blockquote>
 <blockquote>
 <ol class="arabic">
 <li><p class="first">First, <strong>ensure you have followed the preliminary steps above.</strong></p>
-</li>
-<li><p class="first">From within <cite>/tmp/rpms</cite>, download the packaged-up python dependencies:</p>
-<pre class="literal-block">
-yum install wget # if not already installed
-
-wget http://s031.okserver.org/ecportal-rpms/nginx-1.2.2-1.el6.ngx.x86_64.rpm
-wget http://s031.okserver.org/ecportal-rpms/ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm
-</pre>
-<p>The latter is an rpm of the python virtual environment, and is used to expediate
-the install process.</p>
 </li>
 <li><p class="first">From within <cite>/tmp/scripts</cite>, run the following <strong>as root</strong>:</p>
 <pre class="literal-block">

@@ -233,9 +233,27 @@ The HTTP Auth username/password is currently hardcoded into the file: ::
 
   /applications/ecodp/users/ecodp/ckan/lib/ecodp/auth.py
 
-To change the username/password, edit this file and then restart apache: ::
+To change the username/password, edit this file and then restart apache (below)
 
-  /applications/ecodp/users/ecodp/init.d/httpd restart
+The authentication can be removed by editing apache configuration: ::
+
+	/etc/httpd/conf.d/ecodp.conf
+
+The whole of this block can be removed or commented out:  ::
+ 
+	#<Location />
+	#		allow from all
+	#		AuthType Basic
+	#		AuthName "ODP"
+	#		AuthBasicProvider wsgi
+	#		WSGIAuthUserScript /applications/ecodp/users/ecodp/ckan/lib/ecodp/auth.py
+	#		Require valid-user
+	#</Location>
+
+After that, apache needs to be restarted: ::
+
+	service httpd restart
+
 
 Adding CKAN Users
 =================
