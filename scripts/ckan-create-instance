@@ -126,14 +126,14 @@ echo "Create new apache root folder"
 mkdir -p $CKAN_APPLICATION/www
 
 echo "Changing ownership of $CKAN_APPLICATION/www to $CKAN_USER"
-chown -R $CKAN_APPLICATION/www
-chgrp -R $CKAN_APPLICATION/www
+chown -R apache $CKAN_APPLICATION/www
+chgrp -R $CKAN_USER $CKAN_APPLICATION/www
 
 echo "Ensure selinux permissions are set on new apache root folder"
 chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www
 
 echo "Overwriting the existing Apache config ..."
-ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER}
+ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER} ${CKAN_APPLICATION}
 
 ## # Make sure mod_rewrite is enabled
 ## if ! [ -f /etc/apache2/mods-enabled/rewrite.load ] ; then
