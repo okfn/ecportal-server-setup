@@ -130,7 +130,8 @@ chown -R apache $CKAN_APPLICATION/www
 chgrp -R $CKAN_USER $CKAN_APPLICATION/www
 
 echo "Ensure selinux permissions are set on new apache root folder"
-chcon -R -t httpd_sys_content_t $CKAN_APPLICATION/www
+semanage fcontext -a -t httpd_sys_content_t $CKAN_APPLICATION/www
+restorecon -FR $CKAN_APPLICATION/www
 
 echo "Overwriting the existing Apache config ..."
 ckan_overwrite_apache_config ${INSTANCE} ${HOSTNAME} ${CKAN_USER} ${CKAN_APPLICATION}

@@ -15,7 +15,7 @@ SCRIPTS_HOME=$1
 #################################################
 CKAN_DATABASE_PASSWORD=
 CKAN_BACKEND_SERVER=0.0.0.0
-RDF_EXPORT_DUMP_LOCATION=
+RDF_EXPORT_DUMP_LOCATION=/applications/ecodp/users/ecodp/ckan2ts/work/rdf
 
 if [[ "X" == "X$CKAN_DATABASE_PASSWORD" ]] ; then
   echo '***'

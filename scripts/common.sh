@@ -321,7 +321,16 @@ EOF
 			    </Directory>
 			    Alias /open-data/apps/cubeviz ${CKAN_APPLICATION}/www/cubeviz
 			    Alias /open-data/apps/semmap ${CKAN_APPLICATION}/www/semmap
-			
+
+					<Proxy *>
+						Order allow,deny
+						allow from all
+					</Proxy>
+
+					# Virtuoso endpoint
+					ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
+					ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
+		
 			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
 			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
 			

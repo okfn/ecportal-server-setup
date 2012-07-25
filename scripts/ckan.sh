@@ -211,7 +211,8 @@ EOF
   setsebool -P httpd_can_sendmail=1
 
   # 2. Make ckan "executable" by httpd
-  chcon -R --type=httpd_sys_content_t $CKAN_APPLICATION/ckan
+	semanage fcontext -a -t httpd_sys_content_t $CKAN_APPLICATION/ckan
+	restorecon -FR $CKAN_APPLICATION/ckan
 
   echo 'Setting apache to run at boot...'
   ln -s /etc/init.d/httpd $CKAN_APPLICATION/init.d/httpd
@@ -359,7 +360,8 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
       -i $INI_FILE
 
   echo 'Ensuring selinux permissions are set'
-  chcon -R --type=httpd_sys_content_t $CKAN_APPLICATION/ckan
+	semanage fcontext -a -t httpd_sys_content_t $CKAN_APPLICATION/ckan
+	restorecon -FR $CKAN_APPLICATION/ckan
 
   echo 'Restarting all services'
 
