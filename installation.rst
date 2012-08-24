@@ -68,6 +68,59 @@ Frontend Services Installation
 
 This will install and configure nginx, apache and CKAN.
 
+Afterwards this installation some configurations have to be updated.
+
+Reverse http proxy configuration
+--------------------------------
+
+update `${APPROOT}/ngingx/conf.d/default.conf` (if this does not exist check `/etc/nginx/conf.d/default.conf`)
+
+All (four) instances of $host need to be replaced with the hostname of the frontend.
+For instance on line 15,  the line 
+
+      proxy_set_header Host $host:80;
+
+must be updated to 
+
+      proxy_set_header Host webgate.acceptance.ec.testa.eu:80;
+
+Also /etc/httpd/conf.d/ecodp.conf needs to be edited.
+
+      ServerName webgate.acceptance.ec.testa.eu
+      ServerAlias webgate.acceptance.ec.testa.eu localhost
+
+Afterwards, apache and nginx must be restarted
+
+      service httpd restart
+      service nginx restart
+
+
+Reverse https proxy configuration
+---------------------------------
+If https is required the following updates must be done.
+
+update `${APPROOT}/ngingx/conf.d/default.conf` (if this does not exist check `/etc/nginx/conf.d/default.conf`)
+
+All (four) instances of $host need to be replaced with the hostname:443, and after each line https forcing statement must be added.
+For instance on line 15,  the line 
+
+       proxy_set_header Host $host:80;
+
+must be updated to
+
+       proxy_set_header Host webgate.acceptance.ec.testa.eu:443;
+       proxy_set_header X-Forwarded-Proto https;
+
+Update /etc/httpd/conf.d/ecodp.conf. Add a line to the file on root level:
+
+       SetEnvIf X-FORWARDED-PROTO https HTTPS=on
+
+Aftwards, apache and nginx must be restarted
+
+       service nginx restart
+       service httpd restart
+
+
 
 Checking that CKAN is installed
 ===============================

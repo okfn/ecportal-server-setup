@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.9.1: http://docutils.sourceforge.net/" />
 <title></title>
 <style type="text/css">
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 7056 2011-06-17 10:50:48Z milde $
+:Id: $Id: html4css1.css 7434 2012-05-11 21:06:27Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
@@ -249,9 +249,17 @@ pre.address {
   margin-top: 0 ;
   font: inherit }
 
-pre.literal-block, pre.doctest-block, pre.math {
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
   margin-left: 2em ;
   margin-right: 2em }
+
+pre.code .ln { /* line numbers */
+  color: grey;
+}
+
+.code {
+  background-color: #eeeeee
+}
 
 span.classifier {
   font-family: sans-serif ;
@@ -597,6 +605,54 @@ cd /applications/ecodp/users/ecodp/ckan/lib/${CKAN_INSTANCE}/pyenv/src/ckan
 # Run the paster command, referencing the .ini file
 paster {commands} -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
 </pre>
+</div>
+</div>
+<div class="section" id="backup-and-restore-db">
+<h1>Backup and Restore DB</h1>
+<p>On the backend machine run the following command as <tt class="docutils literal">root</tt>:</p>
+<pre class="literal-block">
+su postgres -c 'pg_dump ecodp &gt; /tmp/ecodp.dump'
+</pre>
+<p>This will dump the ecodp database /tmp directory. It is recommended to use
+the /tmp directory as the postgres user has very little rights and has not
+got access to most directories.</p>
+<p>As you are acting as postgres user you do not need to enter a password.</p>
+<p>The restore the database run.:</p>
+<pre class="literal-block">
+su postgres -c 'psql -d ecodp -f /tmp/ecodp.dump'
+</pre>
+<p>This will restore the dump file to the ecodp database.  This database
+needs to be empty and must exist. This will be the case if you have just
+run the backend services script.</p>
+<p><em>If</em> a mistake is made and you want to refresh the data on an already
+populated database then this command can be run from the <em>frontend</em> server.:</p>
+<pre class="literal-block">
+# Run the paster command, referencing the .ini file
+paster db clean -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+</pre>
+<p>Once run the command the restore command can be run again.</p>
+<div class="section" id="ckan-url-tests">
+<h2>CKAN URL TESTS</h2>
+<p>The following in ckan urls should be tested to see if they are
+working.  These should be off /open-data/data</p>
+<p>/
+/dataset
+/dataset/new
+/organization
+organization/new
+organization/estat
+/user/register
+/user</p>
+<p>A test dataset should be made in /dataset/new with name say &quot;test1&quot;.
+Once that is made the following should be checked.</p>
+<p>/dataset?q=test1  (search returns the dataset)</p>
+<p>/dataset/test1
+/dataset/editresources/test1  (a resource should be made)
+/dataset/edit/test1  (edits should be made)
+/dataset/history/test1  (see if edits in history)
+/dataset/test1.rdf
+/dataset/edit/test1 (dataset should be deleted in bottom tab)</p>
+<p>/dataset?q=test1  (search no longer returns dataset)</p>
 </div>
 </div>
 </div>

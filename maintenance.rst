@@ -60,6 +60,8 @@ well as configuration files.
 
 Postgres is run under the ``postgres`` user.
 
+
+
 ElasticSearch
 =============
 
@@ -145,6 +147,7 @@ instance.  As per usual, each ckan extenstion is also a source install.
 ========================
 Common Maintenance Tasks
 ========================
+
 
 Upgrading CKAN
 ==============
@@ -311,3 +314,63 @@ In general, running a paster command consists of: ::
 
   # Run the paster command, referencing the .ini file
   paster {commands} -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+
+
+=====================
+Backup and Restore DB
+=====================
+
+On the backend machine run the following command as ``root``::
+
+  su postgres -c 'pg_dump ecodp > /tmp/ecodp.dump'
+
+This will dump the ecodp database /tmp directory. It is recommended to use
+the /tmp directory as the postgres user has very little rights and has not
+got access to most directories.
+
+As you are acting as postgres user you do not need to enter a password.
+
+The restore the database run.::
+
+  su postgres -c 'psql -d ecodp -f /tmp/ecodp.dump'
+
+This will restore the dump file to the ecodp database.  This database
+needs to be empty and must exist. This will be the case if you have just
+run the backend services script.
+
+*If* a mistake is made and you want to refresh the data on an already
+populated database then this command can be run from the *frontend* server.::
+
+  # Run the paster command, referencing the .ini file
+  paster db clean -c /applications/ecodp/users/ecodp/ckan/etc/%{CKAN_INSTANCE}/%{CKAN_INSTANCE}.ini
+
+Once run the command the restore command can be run again.
+
+CKAN URL TESTS
+================
+
+The following in ckan urls should be tested to see if they are
+working.  These should be off /open-data/data
+
+/
+/dataset
+/dataset/new
+/organization
+organization/new
+organization/estat
+/user/register
+/user
+
+A test dataset should be made in /dataset/new with name say "test1".
+Once that is made the following should be checked.
+
+/dataset?q=test1  (search returns the dataset)
+
+/dataset/test1
+/dataset/editresources/test1  (a resource should be made)
+/dataset/edit/test1  (edits should be made)
+/dataset/history/test1  (see if edits in history)
+/dataset/test1.rdf
+/dataset/edit/test1 (dataset should be deleted in bottom tab)
+
+/dataset?q=test1  (search no longer returns dataset)

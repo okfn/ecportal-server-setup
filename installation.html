@@ -354,7 +354,7 @@ everything on the same machine, then leave it as <cite>0.0.0.0</cite>.</li>
 </li>
 <li><p class="first">From within <cite>./scripts</cite>, run the following:</p>
 <pre class="literal-block">
-bash ./install_backend_services.sh | tee ./backend_install.log
+bash ./install_backend_services.sh 2&gt;&amp;1 | tee ./backend_install.log
 </pre>
 </li>
 <li><p class="first">This will prompt you for a password for the <cite>ecodp</cite> user. Other that that
@@ -378,7 +378,7 @@ elasticsearch : 9200</blockquote>
 </li>
 <li><p class="first">From within <cite>/tmp/scripts</cite>, run the following <strong>as root</strong>:</p>
 <pre class="literal-block">
-bash ./install_frontend_services.sh | tee frontend_install.log
+bash ./install_frontend_services.sh 2&gt;&amp;1 | tee frontend_install.log
 </pre>
 </li>
 <li><p class="first">This will prompt you for a password for the <cite>ecodp</cite> user.</p>
@@ -386,6 +386,46 @@ bash ./install_frontend_services.sh | tee frontend_install.log
 </ol>
 </blockquote>
 <p>This will install and configure nginx, apache and CKAN.</p>
+<p>Afterwards this installation some configurations have to be updated.</p>
+<div class="section" id="reverse-http-proxy-configuration">
+<h2>Reverse http proxy configuration</h2>
+<p>update <cite>${APPROOT}/ngingx/conf.d/default.conf</cite> (if this does not exist check <cite>/etc/nginx/conf.d/default.conf</cite>)</p>
+<p>All (four) instances of $host need to be replaced with the hostname of the frontend.
+For instance on line 15,  the line</p>
+<blockquote>
+proxy_set_header Host $host:80;</blockquote>
+<p>must be updated to</p>
+<blockquote>
+proxy_set_header Host webgate.acceptance.ec.testa.eu:80;</blockquote>
+<p>Also /etc/httpd/conf.d/ecodp.conf needs to be edited.</p>
+<blockquote>
+ServerName webgate.acceptance.ec.testa.eu
+ServerAlias webgate.acceptance.ec.testa.eu localhost</blockquote>
+<p>Afterwards, apache and nginx must be restarted</p>
+<blockquote>
+service httpd restart
+service nginx restart</blockquote>
+</div>
+<div class="section" id="reverse-https-proxy-configuration">
+<h2>Reverse https proxy configuration</h2>
+<p>If https is required the following updates must be done.</p>
+<p>update <cite>${APPROOT}/ngingx/conf.d/default.conf</cite> (if this does not exist check <cite>/etc/nginx/conf.d/default.conf</cite>)</p>
+<p>All (four) instances of $host need to be replaced with the hostname:443, and after each line https forcing statement must be added.
+For instance on line 15,  the line</p>
+<blockquote>
+proxy_set_header Host $host:80;</blockquote>
+<p>must be updated to</p>
+<blockquote>
+proxy_set_header Host webgate.acceptance.ec.testa.eu:443;
+proxy_set_header X-Forwarded-Proto https;</blockquote>
+<p>Update /etc/httpd/conf.d/ecodp.conf. Add a line to the file on root level:</p>
+<blockquote>
+SetEnvIf X-FORWARDED-PROTO https HTTPS=on</blockquote>
+<p>Aftwards, apache and nginx must be restarted</p>
+<blockquote>
+service nginx restart
+service httpd restart</blockquote>
+</div>
 </div>
 <div class="section" id="checking-that-ckan-is-installed">
 <h1>Checking that CKAN is installed</h1>
@@ -397,6 +437,11 @@ curl --user &lt;http auth user name&gt;:&lt;http auth password&gt; http://localh
 </pre>
 <p>The CKAN homepage should be displayed.</p>
 </div>
+</div>
+<div class="footer">
+<hr class="footer" />
+Generated on: 2012-08-16 13:00 UTC.
+
 </div>
 </body>
 </html>
