@@ -208,15 +208,6 @@ ckan_overwrite_apache_config () {
         local CKAN_USER=$3
         local CKAN_APPLICATION=$4
 
-        echo "Creating auth.py file instance ${INSTANCE}"
-        cat << EOF > $CKAN_LIB/${INSTANCE}/auth.py
-
-def check_password(environ, user, password):
-    if user == 'ec':
-        return password == 'ecportal'
-    return None
-EOF
-        
         echo "Creating httpd configuration file for instance ${INSTANCE}"
         cat <<- EOF > /etc/httpd/conf.d/${INSTANCE}.conf
 
@@ -247,15 +238,6 @@ EOF
 			#    </Directory>
 			
 			
-			    <Location />
-			       allow from all
-			       AuthType Basic
-			       AuthName "ODP"
-			       AuthBasicProvider wsgi
-			       WSGIAuthUserScript $CKAN_LIB/${INSTANCE}/auth.py
-			       Require valid-user
-			    </Location>
-
           # Open up the action and data apis as they are required
           # for the ckanext-qa and ckanext-datastorer extensions,
           # both of which don't allow access to resources requiring
