@@ -77,6 +77,7 @@ ckan_create_who_ini () {
         if ! [ -f $CKAN_ETC/${INSTANCE}/who.ini ] ; then
             cp -n $PYENV/src/ckan/ckan/config/who.ini $CKAN_ETC/${INSTANCE}/who.ini
             sed -e "s,%(here)s,$CKAN_LIB/${INSTANCE}," \
+		-e 's,^logged_out_url = /user/logged_out,logged_out_url = /open-data/data/user/logged_out,' \
                 -i $CKAN_ETC/${INSTANCE}/who.ini
             chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/who.ini
         fi
