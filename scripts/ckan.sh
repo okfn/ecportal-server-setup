@@ -378,13 +378,16 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
 
   
   echo '---------------------------------------------'
-  echo 'Creating rdf-export cronjob.'
+  echo 'Creating cronjobs'
   echo '---------------------------------------------'
 
   cat <<EOF | crontab -u $CKAN_USER -
 0 0 * * * $PASTER --plugin=ckan rdf-export -c $INI_FILE $RDF_EXPORT_DUMP_LOCATION
-0 1 * * * find /applications/ecodp/users/ecodp/ckan/lib/ecodp/data/ -type f -amin +5000 -delete
 0 2 * * 1 $PASTER --plugin=ckan tracking -c $INI_FILE
+EOF
+
+  cat <<EOF | crontab -u apache -
+0 1 * * * find /applications/ecodp/users/ecodp/ckan/lib/ecodp/data/ -type f -amin +5000 -delete
 EOF
 
 }
