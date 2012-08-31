@@ -77,6 +77,7 @@ ckan_create_who_ini () {
         if ! [ -f $CKAN_ETC/${INSTANCE}/who.ini ] ; then
             cp -n $PYENV/src/ckan/ckan/config/who.ini $CKAN_ETC/${INSTANCE}/who.ini
             sed -e "s,%(here)s,$CKAN_LIB/${INSTANCE}," \
+		-e 's,^logged_out_url = /user/logged_out,logged_out_url = /open-data/data/user/logged_out,' \
                 -i $CKAN_ETC/${INSTANCE}/who.ini
             chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/who.ini
         fi
@@ -208,15 +209,6 @@ ckan_overwrite_apache_config () {
         local CKAN_USER=$3
         local CKAN_APPLICATION=$4
 
-        echo "Creating auth.py file instance ${INSTANCE}"
-        cat << EOF > $CKAN_LIB/${INSTANCE}/auth.py
-
-def check_password(environ, user, password):
-    if user == 'ec':
-        return password == 'ecportal'
-    return None
-EOF
-        
         echo "Creating httpd configuration file for instance ${INSTANCE}"
         cat <<- EOF > /etc/httpd/conf.d/${INSTANCE}.conf
 
@@ -247,15 +239,6 @@ EOF
 			#    </Directory>
 			
 			
-			    <Location />
-			       allow from all
-			       AuthType Basic
-			       AuthName "ODP"
-			       AuthBasicProvider wsgi
-			       WSGIAuthUserScript $CKAN_LIB/${INSTANCE}/auth.py
-			       Require valid-user
-			    </Location>
-
           # Open up the action and data apis as they are required
           # for the ckanext-qa and ckanext-datastorer extensions,
           # both of which don't allow access to resources requiring
@@ -328,8 +311,8 @@ EOF
 					</Proxy>
 
 					# Virtuoso endpoint
-					ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
-					ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
+					## ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
+					## ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
 		
 			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
 			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
