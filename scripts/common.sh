@@ -269,7 +269,7 @@ ckan_overwrite_apache_config () {
 			
 			    # this is CKAN app
 			    WSGIScriptAlias /open-data/data $CKAN_LIB/${INSTANCE}/wsgi.py
-			    WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=2 threads=10
+			    WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=4 threads=15 maximum-requests=2000
 			    WSGIProcessGroup ${INSTANCE}
 			
 			    # pass authorization info on (needed for rest api)

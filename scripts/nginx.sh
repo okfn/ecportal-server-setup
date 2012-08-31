@@ -108,6 +108,7 @@ server {
      proxy_no_cache \$cookie_auth_tkt;
      proxy_cache_valid 30m;
      proxy_cache_valid 404 5m;
+     proxy_ignore_headers "Cache-Control" 
   }
 
   location ~ /open-data/[a-zA-z][a-zA-z]/data$ {
@@ -120,6 +121,7 @@ server {
      proxy_no_cache \$cookie_auth_tkt;
      proxy_cache_valid 30m;
      proxy_cache_valid 404 5m;
+     proxy_ignore_headers "Cache-Control" 
   }
 
   location /open-data/ {
