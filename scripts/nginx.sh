@@ -111,7 +111,8 @@ server {
      proxy_ignore_headers "Cache-Control";
   }
 
-  location ~ /open-data/[a-zA-z][a-zA-z]/data$ {
+  location ~ /open-data/[a-zA-z][a-zA-z]/data/.* {
+
      proxy_pass http://0.0.0.0:8008;
      proxy_set_header Host \$host:80;
      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
