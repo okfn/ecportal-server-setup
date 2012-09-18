@@ -122,7 +122,7 @@ install_python_dependencies_from_source () {
   $PIP install -e "git+https://github.com/okfn/ckanext-qa.git@release-v1.7.1#egg=ckanext-qa"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-qa and dependencies" && exit 1
 
-  $PIP install -e "git+https://github.com/okfn/ckanext-datastorer.git#egg=ckanext-datastorer"
+  $PIP install -e "git+https://github.com/okfn/ckanext-datastorer.git@ff35ae#egg=ckanext-datastorer"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-datastorer and dependencies" && exit 1
 
 }
