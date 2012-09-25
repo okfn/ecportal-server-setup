@@ -31,7 +31,7 @@ build_virtualenv_rpm () {
   echo '------------------------------------------'
 
   echo 'Installing dependencies for fpm'
-  yum install -y ruby ruby-devel rubygems rpm-build
+  yum install -y ruby ruby-devel rubygems rpm-build gcc
   gem install fpm
 
   echo 'Building package'
