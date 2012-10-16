@@ -58,6 +58,18 @@ then
   exit 1
 fi
 
+if [ ! "yes" == "$OVERWRITE_APACHE_CONFIG" ] && [ ! "no" == "$OVERWRITE_APACHE_CONFIG" ]
+then
+  echo 'ERROR: OVERWRITE_APACHE_CONFIG environment variable is not set to either "yes" or "no"'
+  exit 1
+fi
+
+if [ ! "yes" == "$OVERWRITE_NGINX_CONFIG" ] && [ ! "no" == "$OVERWRITE_NGINX_CONFIG" ]
+then
+  echo 'ERROR: OVERWRITE_NGINX_CONFIG environment variable is not set to either "yes" or "no"'
+  exit 1
+fi
+
 PASTER=$PYENV/bin/paster
 PIP=$PYENV/bin/pip
 INI_FILE="$CKAN_ETC/$CKAN_INSTANCE/$CKAN_INSTANCE.ini"
@@ -190,15 +202,18 @@ install_ckan () {
   echo '------------------------------------------'
   echo 'Setting up apache'
   echo '------------------------------------------'
+  echo 'Creating (non-shared) apache config file: /etc/httpd/conf.d/0-wsgi.conf'
   cat <<EOF > /etc/httpd/conf.d/0-wsgi.conf
 LoadModule wsgi_module modules/mod_wsgi.so
 WSGISocketPrefix /var/run/wsgi
 EOF
   
+  echo 'Creating (non-shared) apache config file: /etc/httpd/conf.d/0-rewrite.conf'
   cat <<EOF > /etc/httpd/conf.d/0-rewrite.conf
 LoadModule rewrite_module modules/mod_rewrite.so
 EOF
 
+  echo 'Modifying /etc/httpd/conf/httpd.conf to listen on port 8008'
   # Listen on port 8008 as nginx is listening on 80.
   sed -e 's/^Listen 80$/Listen 8008/' \
       -i /etc/httpd/conf/httpd.conf
@@ -251,7 +266,7 @@ EOF
 
   source $PYENV/bin/activate
   source ./common.sh
-  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION
+  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION $OVERWRITE_APACHE_CONFIG
 
   # Configure the new instance's ini file
   echo 'Setting database connection strings...'

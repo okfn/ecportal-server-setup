@@ -209,6 +209,12 @@ ckan_overwrite_apache_config () {
         local CKAN_USER=$3
         local CKAN_APPLICATION=$4
 
+        if [ -f /etc/httpd/conf.d/${INSTANCE}.conf ]
+        then
+            echo "Backing-up existing httpd configuration file for instance ${INSTANCE}"
+            cp "/etc/httpd/conf.d/${INSTANCE}.conf" "/etc/httpd/conf.d/${INSTANCE}.conf.`date +%F_%T`.bak"
+        fi
+
         echo "Creating httpd configuration file for instance ${INSTANCE}"
         cat <<- EOF > /etc/httpd/conf.d/${INSTANCE}.conf
 

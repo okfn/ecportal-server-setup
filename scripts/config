@@ -49,6 +49,8 @@ CKAN_DOMAIN=ecodp.ckan.org
 CKAN_APPLICATION=/applications/ecodp/users/ecodp
 CKAN_VERSION="release-v1.7.1-ecportal"
 PACKAGE_INSTALL="yes"
+OVERWRITE_APACHE_CONFIG="no"
+OVERWRITE_NGINX_CONFIG="no"
 PYENV_RPM="ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm"
 
 if [[ ! $CKAN_INSTANCE ]]; then
