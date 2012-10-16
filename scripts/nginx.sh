@@ -23,6 +23,12 @@ then
   exit 1
 fi
  
+if [ ! "yes" == "$OVERWRITE_NGINX_CONFIG" ] && [ ! "no" == "$OVERWRITE_NGINX_CONFIG" ]
+then
+  echo 'ERROR: OVERWRITE_NGINX_CONFIG environment variable is not set to either "yes" or "no"'
+  exit 1
+fi
+
 # Location of nginx within the CKAN_APPLICATION structure.
 NGINX_PRODUCT=$CKAN_APPLICATION/nginx
 
@@ -44,7 +50,36 @@ install_nginx () {
 
   echo "Installing from $rpm_file"
   rpm -i $rpm_file
+
+  if [ -f /etc/nginx/nginx.conf ]
+  then
+      if [ "yes" == $OVERWRITE_NGINX_CONFIG ]
+      then
+        echo 'Overwriting existing shared nginx configuration file: /etc/nginx/nginx.conf'
+        _write_nginx_conf
+      else
+        echo 'SKIPPED: Not overwriting existing shared nginx configuration file.'
+      fi
+  else
+    echo 'Creating shared nginx configuration file: /etc/nginx/nginx.conf'
+    _write_nginx_conf
+  fi
   
+  echo 'Installing into $CKAN_APPLICATION'
+  mkdir -p $NGINX_PRODUCT
+  mkdir -p $NGINX_PRODUCT/cache
+  mkdir -p $NGINX_PRODUCT/proxy
+  ln -s /etc/nginx $NGINX_PRODUCT/etc
+  ln -s /etc/init.d/nginx $CKAN_APPLICATION/init.d/nginx
+
+  chkconfig nginx on --level 345
+  chkconfig --list nginx
+  
+  $CKAN_APPLICATION/init.d/nginx restart
+}
+
+_write_nginx_conf () {
+
   rename '.conf' '' /etc/nginx/conf.d/*.conf
 
   cat <<EOF > /etc/nginx/nginx.conf
@@ -134,15 +169,4 @@ server {
 }
 EOF
   
-  echo 'Installing into $CKAN_APPLICATION'
-  mkdir -p $NGINX_PRODUCT
-  mkdir -p $NGINX_PRODUCT/cache
-  mkdir -p $NGINX_PRODUCT/proxy
-  ln -s /etc/nginx $NGINX_PRODUCT/etc
-  ln -s /etc/init.d/nginx $CKAN_APPLICATION/init.d/nginx
-
-  chkconfig nginx on --level 345
-  chkconfig --list nginx
-  
-  $CKAN_APPLICATION/init.d/nginx restart
 }

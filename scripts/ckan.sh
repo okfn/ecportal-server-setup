@@ -64,12 +64,6 @@ then
   exit 1
 fi
 
-if [ ! "yes" == "$OVERWRITE_NGINX_CONFIG" ] && [ ! "no" == "$OVERWRITE_NGINX_CONFIG" ]
-then
-  echo 'ERROR: OVERWRITE_NGINX_CONFIG environment variable is not set to either "yes" or "no"'
-  exit 1
-fi
-
 PASTER=$PYENV/bin/paster
 PIP=$PYENV/bin/pip
 INI_FILE="$CKAN_ETC/$CKAN_INSTANCE/$CKAN_INSTANCE.ini"
