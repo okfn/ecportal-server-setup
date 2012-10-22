@@ -161,7 +161,7 @@ install_python_dependencies_from_rpm () {
 	fi
 
 	echo "Installing from $rpm_file"
-	rpm -i $rpm_file
+	rpm --upgrade $rpm_file
 }
 
 install_ckan () {
