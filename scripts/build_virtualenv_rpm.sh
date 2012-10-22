@@ -34,7 +34,9 @@ build_virtualenv_rpm () {
   yum install -y ruby ruby-devel rubygems rpm-build gcc
   gem install fpm
 
-  echo 'Building package'
-  fpm -s dir -t rpm -n 'ecportal-python-virtual-environment' -v 1.7.1 -a x86_64 $PYENV
+  local ITERATION=`date +%s`
 
+  echo "Building package: $ITERATION"
+  fpm -s dir -t rpm -n 'ecportal-python-virtual-environment' -v 1.7.1 --iteration "$ITERATION" -a x86_64 $PYENV
+  mv "ecportal-python-virtual-environment-1.7.1-${ITERATION}.x86_64.rpm" ecportal-python-virtual-environment-1.7.1-1.x86_64.rpm
 }
