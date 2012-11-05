@@ -225,6 +225,12 @@ ckan_overwrite_apache_config () {
 			    ServerAlias ${ServerName} localhost
 			    DirectoryIndex index.phtml index.html index.php index.htm
 			
+          ## Re-write urls with a 2 character locale to a form supported by CKAN.
+          ## ECODP locale urls are of the form: <domain>/open-data/??/data/<rest of url>
+          ## Whereas CKAN requires:             <domain>/open-data/data/??/<rest of url>
+          ##
+          ## This is because CKAN is mounted at /open-data/data, so the locale must come
+          ## after the mount point in order that CKAN can see it.
 			    RewriteEngine on
 			    RewriteRule ^/open-data/(..)/data($|/(.*))$ /open-data/data/\$1/\$3 [L,QSA,PT]
 			
