@@ -282,7 +282,7 @@ EOF
   echo '------------------------------------------'
 
   sed -e "s/^email_to =.*/email_to =/" \
-      -e "s/^error_email_from =.*/error_email_from = odp-helpdesk@publications.europa.eu/" \
+      -e "s/^error_email_from =.*/error_email_from = $CKAN_ERROR_EMAIL_FROM/" \
       -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form ecportal_controller multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
       -e "s,^#\?licenses_group_url =.*,licenses_group_url = file://$PYENV/src/ckanext-ecportal/licenses.json," \
       -e "s/^ckan\.site_title =.*/ckan.site_title = Data Portal/" \
