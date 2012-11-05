@@ -11,11 +11,18 @@ SCRIPTS_HOME=$1
 # SET THE CKAN DATABASE PASSWORD
 # SET THE CKAN_BACKEND_SERVER ip address or name
 # SET THE RDF_EXPORT_DUMP_LOCATION to a directory
+# SET THE PG_HBA_CONF variable.
 # Edit the setting below.
 #################################################
 CKAN_DATABASE_PASSWORD=
 CKAN_BACKEND_SERVER=0.0.0.0
 RDF_EXPORT_DUMP_LOCATION=/applications/ecodp/users/ecodp/ckan2ts/work/rdf
+
+## Set the pg_hba access configuration below.
+## This can be a multi-lined value.
+read -d '' PG_HBA_CONF <<"EOF"
+host  all all 158.167.97.0/23  trust
+EOF
 
 if [[ "X" == "X$CKAN_DATABASE_PASSWORD" ]] ; then
   echo '***'

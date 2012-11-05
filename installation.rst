@@ -25,14 +25,17 @@ time.
     i)   The `CKAN_DATABASE_PASSWORD` setting needs setting to a randomly
          chosen password that will be used for CKAN user setup for postgresql.
 
-    ii)  The `CKAN_BACKEND_SERVER` needs to be set to the IP address that the
+    ii)  The `CKAN_BACKEND_SERVER` needs to be set to the name of server that the
          backend services will be installed on.  This is used to ensure that
          the frontend services are configured correctly.  If you are installing
          everything on the same machine, then leave it as `0.0.0.0`.
 
     iii) `CKAN_DOMAIN` should be the domain name serving CKAN (on production, ec.europa.eu)
 
-    iv)  All other options should be left as they are.
+    iv)  `PG_HBA_CONF` can be set to include any custom configuration controlling the
+         access to the postgres database.  This can include IP ranges.
+
+    v)   All other options should be left as they are.
 
 Backend Services Installation
 =============================

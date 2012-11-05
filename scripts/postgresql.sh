@@ -53,30 +53,22 @@ install_postgresql () {
   ln -s /etc/init.d/postgresql $CKAN_APPLICATION/init.d/postgresql
   ln -s /var/lib/pgsql $POSTGRES_PRODUCT/pgsql
   
-  # Allow postgres to accept local connections too
+  # By default, allow postgres to accept local connections as trusted.
   service postgresql initdb
   sed -e '/^local/ s,ident,trust,' \
-      -e '/^host.*/ s,ident,trust,' \
-      -e "/^host.*${CKAN_BACKEND_SERVER}/ s,^,#," \
+      -e '/^host.*127\.0\.0\.1/ s,ident,trust,' \
       -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
-  # If the backend server is not local, then
-  # allow postgresql to accept non-local connections too
-  if [ ! "$CKAN_BACKEND_SERVER" == "0.0.0.0" ]
-  then
+  # This script sets a marker in the file, after which any content
+  # will be overwritten when/if this script runs again.
+  # Delete all lines after (and including) the marker line
+  sed -e '/#### LINES BELOW ADDED BY ECODP INSTALLATION SCRIPTS ####/,$d' \
+      -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
-    ## # remove all previous reference to the same backend server
-    ## sed -e "/^host  all all ${CKAN_BACKEND_SERVER}  ident$/d" \
-    ##     -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
-
-    ## echo "host  all all ${CKAN_BACKEND_SERVER}  ident" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
-
-    # remove all previous reference to an existing range of trusted IPs
-    sed -e "/^host  all all 158\.167\.97\.0\/23 trust$/d" \
-        -i $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
-
-    echo "host  all all 158.167.97.0/23  trust" >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
-  fi
+  # Append customized connection configuration, as defined in the installation
+  # script's config file, config.sh
+  echo '#### LINES BELOW ADDED BY ECODP INSTALLATION SCRIPTS ####' >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
+  echo $PG_HBA_CONF >> $POSTGRES_PRODUCT/pgsql/data/pg_hba.conf
 
   sed -e "s/^#listen_addresses =.*/listen_addresses = '*'/" \
       -i $POSTGRES_PRODUCT/pgsql/data/postgresql.conf

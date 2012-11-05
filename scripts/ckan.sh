@@ -15,6 +15,8 @@
 ##                           from an RPM or not.
 ## $PYENV_RPM              : The name of RPM to use to install the
 ##                           python dependencies.
+## $CKAN_BACKEND_SERVER    : The ip or name of the server hosting the
+##                           backend services.
 
 if [ "X" == "X$CKAN_APPLICATION" ]
 then
@@ -374,7 +376,7 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
 
   echo 'Restarting all services'
 
-  if [ $CKAN_BACKEND_SERVER == "0.0.0.0" ]
+  if [ $CKAN_BACKEND_SERVER == "0.0.0.0" ] || [ $CKAN_BACKEND_SERVER == "localhost" ]]
   then
     $CKAN_APPLICATION/init.d/elasticsearch restart
     $CKAN_APPLICATION/init.d/postgresql restart

@@ -8,7 +8,7 @@
 ##
 ## $CKAN_APPLICATION    : The location of the CKAN application,
 ##                        eg - /applications/ckan/users/system
-## $CKAN_BACKEND_SERVER : The ip address of the backend server.
+## $CKAN_BACKEND_SERVER : The ip address or name of the backend server.
 
 if [ "X" == "X$CKAN_BACKEND_SERVER" ]
 then
