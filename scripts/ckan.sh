@@ -316,7 +316,7 @@ qa.organisations = false\\
   echo '------------------------------------------'
   Old_DIR=$PWD
   cd $PYENV/src/ckan
-  $PASTER tracking -c $INI_FILE
+  $PASTER tracking update -c $INI_FILE
   cd "$OLD_DIR"
 
 
@@ -394,7 +394,7 @@ ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
 
   cat <<EOF | crontab -u $CKAN_USER -
 0 0 * * * $PASTER --plugin=ckan rdf-export -c $INI_FILE $RDF_EXPORT_DUMP_LOCATION
-0 2 * * 1 $PASTER --plugin=ckan tracking -c $INI_FILE
+0 2 * * 1 $PASTER --plugin=ckan tracking update -c $INI_FILE
 EOF
 
   cat <<EOF | crontab -u apache -
