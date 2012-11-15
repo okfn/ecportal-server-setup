@@ -14,7 +14,13 @@ use = egg:Paste#http
 host = 0.0.0.0
 port = 5000
 
-[app:main]
+[pipeline:main]
+pipeline = gzip pylons
+
+[filter:gzip]
+paste.filter_app_factory = paste.gzipper:make_gzip_middleware
+
+[app:pylons]
 ofs.impl = pairtree
 ofs.storage_dir = /applications/ecodp/users/ecodp/ckan/lib/ecodp/file-storage
 
