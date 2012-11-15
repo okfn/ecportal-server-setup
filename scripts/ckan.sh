@@ -281,35 +281,19 @@ EOF
   echo 'Customising ecportal .ini file.'
   echo '------------------------------------------'
 
-  sed -e "s/^email_to =.*/email_to =/" \
-      -e "s/^error_email_from =.*/error_email_from = $CKAN_ERROR_EMAIL_FROM/" \
-      -e "s/^ckan\.plugins =.*/ckan.plugins = synchronous_search ecportal ecportal_form ecportal_publisher_form ecportal_controller multilingual_dataset multilingual_group multilingual_tag qa datastorer/" \
-      -e "s,^#\?licenses_group_url =.*,licenses_group_url = file://$PYENV/src/ckanext-ecportal/licenses.json," \
-      -e "s/^ckan\.site_title =.*/ckan.site_title = Data Portal/" \
-      -e "s,^ckan\.site_logo =.*,ckan.site_logo = /images/logo.png," \
-      -e "s/^ckan\.site_description =.*/ckan.site_description = The Open Data Hub of the European Union/" \
-      -e "s,^ckan\.site_url =.*,ckan.site_url = http://$CKAN_DOMAIN/open-data/data/," \
-      -e "s,^ckan\.favicon =.*,ckan.favicon = /images/favicon.ico," \
-      -e "s/^ckan\.site_id =.*/ckan.site_id = ecportal/" \
-      -e 's|^ckan.default_roles.Package =.*|ckan.default_roles.Package = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
-      -e 's|^ckan.default_roles.Group =.*|ckan.default_roles.Group = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
-      -e 's|^ckan.default_roles.System =.*|ckan.default_roles.System = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
-      -e 's|^ckan.default_roles.AuthorizationGroup =.*|ckan.default_roles.AuthorizationGroup = {"visitor": ["reader"], "logged_in": ["reader"]}|' \
-      -e "s/^ckan\.locale_default =.*/ckan.locale_default = en/" \
-      -e "s/^#ckan\.locales_offered =.*/ckan.locales_offered = en de es fr it pl/" \
-      -e "s/^ckan\.locale_order =.*/ckan.locale_order = en bg cs da de et el es fr ga it lv lt hu mt nl pl pt ro sk sl fi sv/" \
-      -e "s/^ckan\.locales_filtered_out =.*/ckan.locales_filtered_out = pt_BR sr_Latn zh_TW ca cs_CZ no ru sq sr/" \
-      -e "s/^# ckan\.datastore\.enabled = 1/ckan.datastore.enabled = 1/" \
-      -e "/^\[app:main\]$/ a\
-ckan.root_path = /open-data/{{LANG}}/data\\
-ckan.tracking_enabled = true\\
-ckan.i18n_directory = $PYENV/src/ckanext-ecportal/ckanext/ecportal\\
-ckan.search_facets = groups tags res_format license_id vocab_language vocab_geographical_coverage\\
-ckan.default.group_type = organization\\
-qa.organisations = false\\
-" \
-      -i $INI_FILE
+  if [ -f "$INI_FILE" ]
+  then
+    local BACKUP_INI_FILE="$INI_FILE.bak-`date +%F_%T`"
+    echo "Backing up existing ini file $INI_FILE to $BACKUP_INI_FILE"
+    cp -f "$INI_FILE" "$BACKUP_INI_FILE"
+  fi
 
+  sed -e "s/\\\${CKAN_ERROR_EMAIL_FROM}/$CKAN_ERROR_EMAIL_FROM/g" \
+      -e "s/\\\${PYENV}/$PYENV/g" \
+      -e "s/\\\${CKAN_DOMAIN}/$CKAN_DOMAIN/g" \
+      -e "s/\\\${CKAN_LIB}/$CKAN_LIB/g" \
+      -e "s/\\\${CKAN_INSTANCE}/$CKAN_INSTANCE/g" \
+      "$SCRIPTS_HOME/resources/ecodp.ini.tmpl" > "$INI_FILE"
 
   echo '------------------------------------------'
   echo 'Running internal analytics tracking command'
@@ -364,11 +348,7 @@ qa.organisations = false\\
     $PIP install pairtree
   fi
 
-  sed -e "/^\[app:main\]$/ a\
-ofs.impl = pairtree\\
-ofs.storage_dir = $CKAN_LIB/$CKAN_INSTANCE/file-storage\\
-" \
-      -i $INI_FILE
+  echo 'CKAN config already configured for uploads...'
 
   echo 'Ensuring selinux permissions are set'
 	semanage fcontext -a -t httpd_sys_content_t $CKAN_APPLICATION/ckan
