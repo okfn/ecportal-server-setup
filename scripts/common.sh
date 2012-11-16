@@ -267,18 +267,6 @@ ckan_overwrite_apache_config () {
             Satisfy Any
           </Location>
 			
-			    <Directory $CKAN_LIB/${INSTANCE}/static>
-			        allow from all
-			    </Directory>
-			
-			    Alias /open-data/data/dump $CKAN_LIB/${INSTANCE}/static/dump
-			
-			    # Disable the mod_python handler for static files
-			    <Location /open-data/dump>
-			        SetHandler None
-			        Options +Indexes
-			    </Location>
-			
 			    # this is CKAN app
 			    WSGIScriptAlias /open-data/data $CKAN_LIB/${INSTANCE}/wsgi.py
 			    WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=4 threads=15 maximum-requests=2000
