@@ -21,6 +21,14 @@ pipeline = gzip pylons
 paste.filter_app_factory = paste.gzipper:make_gzip_middleware
 
 [app:pylons]
+
+# Enable browser-side caching for static files by setting Expires (and
+# Cache-Control) headers.
+#
+# Expiration: +1 day
+ckan.cache_enabled = true
+ckan.static_max_age = 86400
+
 ofs.impl = pairtree
 ofs.storage_dir = /applications/ecodp/users/ecodp/ckan/lib/ecodp/file-storage
 
