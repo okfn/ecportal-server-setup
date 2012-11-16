@@ -121,6 +121,14 @@ install_python_dependencies_from_source () {
   echo '------------------------------------------'
   echo 'Installing ckanext-ecportal dependencies  '
   echo '------------------------------------------'
+
+  ## Upgraded version of paste is required becase there's a bug in the gzip middleware
+  ## in pip 1.7.2.  The bug causes empty responses to not be handled correctly, eg.
+  ## a 302 redirection.  And the ECODP project uses paste's Gzip middleware to compress
+  ## responses.
+  $PIP install paste==1.7.5.1
+  [ $? -ne 0 ] && echo "ERROR: failure to install paste==1.7.5.1" && exit 1
+
   $PIP install -e "git+https://github.com/okfn/ckanext-ecportal.git#egg=ckanext-ecportal"
   [ $? -ne 0 ] && echo "ERROR: failure to install ckanext-ecportal and dependencies" && exit 1
 
