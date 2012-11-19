@@ -14,13 +14,12 @@ use = egg:Paste#http
 host = 0.0.0.0
 port = 5000
 
-[pipeline:main]
-pipeline = gzip pylons
-
 [filter:gzip]
 paste.filter_app_factory = paste.gzipper:make_gzip_middleware
 
-[app:pylons]
+[app:main]
+
+filter-with = gzip
 
 # Enable browser-side caching for static files by setting Expires (and
 # Cache-Control) headers.
