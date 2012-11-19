@@ -74,10 +74,12 @@ ckan_create_who_ini () {
     else
         INSTANCE=$1
         local PYENV=$CKAN_LIB/${INSTANCE}/pyenv
+        local AUTH_TKT_SECRET=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c10`
         if ! [ -f $CKAN_ETC/${INSTANCE}/who.ini ] ; then
             cp -n $PYENV/src/ckan/ckan/config/who.ini $CKAN_ETC/${INSTANCE}/who.ini
             sed -e "s,%(here)s,$CKAN_LIB/${INSTANCE}," \
 		-e 's,^logged_out_url = /user/logged_out,logged_out_url = /open-data/data/user/logged_out,' \
+                -e "s/^secret = somesecret/secret = $AUTH_TKT_SECRET/" \
                 -i $CKAN_ETC/${INSTANCE}/who.ini
             chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/who.ini
         fi
