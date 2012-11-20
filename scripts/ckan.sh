@@ -238,6 +238,14 @@ EOF
   chkconfig httpd on --level 345
   chkconfig --list httpd
 
+  # Require apache user to be a member of $CKAN_INSTANCE group
+  # in order that it can be granted read-access to the CKAN
+  # configuration files.  These files don't have global read-access
+  # because they contain sensitive configuration data, including
+  # the database password.
+  echo "Adding apache user to group '$CKAN_INSTANCE'"
+  usermod --append --groups "$CKAN_INSTANCE" apache
+
   echo '------------------------------------------'
   echo 'Setting up python virtualenv              '
   echo '------------------------------------------'

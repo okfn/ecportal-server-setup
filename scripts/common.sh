@@ -81,7 +81,11 @@ ckan_create_who_ini () {
 		-e 's,^logged_out_url = /user/logged_out,logged_out_url = /open-data/data/user/logged_out,' \
                 -e "s/^secret = somesecret/secret = $AUTH_TKT_SECRET/" \
                 -i $CKAN_ETC/${INSTANCE}/who.ini
+
+            # Set permissions and ownership so that only members of the
+            # ${INSTANCE} group can read the who.ini file.
             chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/who.ini
+            chmod 640 "$CKAN_ETC/${INSTANCE}/who.ini"
         fi
     fi
 }
@@ -116,7 +120,10 @@ ckan_create_config_file () {
             -e "s,\"ckan\.log\",\"/var/log/ckan/${INSTANCE}/${INSTANCE}.log\"," \
             -e "s,#solr_url = http://127.0.0.1:8983/solr,solr_url = http://127.0.0.1:8983/solr," \
             -i $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
+        # Set permissions and ownership so that only members of the
+        # ${INSTANCE} group can read the .ini file.
         chown ckan${INSTANCE}:ckan${INSTANCE} $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini
+        chmod 640 "$CKAN_ETC/${INSTANCE}/${INSTANCE}.ini"
     fi
 }
 
