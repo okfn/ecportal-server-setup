@@ -278,7 +278,7 @@ EOF
 
   source $PYENV/bin/activate
   source ./common.sh
-  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION $OVERWRITE_APACHE_CONFIG
+  ./ckan-create-instance $CKAN_INSTANCE $CKAN_DOMAIN no $CKAN_LIB $CKAN_ETC $CKAN_USER $CKAN_APPLICATION $OVERWRITE_APACHE_CONFIG $CKAN_DATABASE_PASSWORD
 
   # Configure the new instance's ini file
   echo 'Setting database connection strings...'

@@ -8,9 +8,9 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-if [ $# -lt 8 ]
+if [ $# -lt 9 ]
 then    
-    echo "ERROR: Wrong number of arguments. Expected: (instance name, hostname, local database [yes or no], ckan_lib_dir, ckan_conf_dir, ckan_user, ckan_application_dir, (yes|no)) e.g."
+    echo "ERROR: Wrong number of arguments. Expected: (instance name, hostname, local database [yes or no], ckan_lib_dir, ckan_conf_dir, ckan_user, ckan_application_dir, (yes|no), database_password) e.g."
     echo "       $0 std std.ckan.org yes /var/lib/ckan /etc/ckan"
     exit 1
 fi
@@ -27,33 +27,14 @@ CKAN_APPLICATION=$7
 
 OVERWRITE_APACHE_CONFIG=$8
 
+CKAN_DATABASE_PASSWORD=$9
+
 # Check the LOCAL_DB variable
 
 if ! [[ ( "$LOCAL_DB" == "yes" ) || ("$LOCAL_DB" == "no" ) ]]
 then
     echo "Expceted the LOCAL_DB variable to be 'yes' or 'no', not '$LOCAL_DB'"
     exit 1
-fi
-
-# Create an install settings file if it doesn't exist
-if ! [ -f $CKAN_ETC/${INSTANCE}/install_settings.sh ] ; then
-    mkdir -p $CKAN_ETC/${INSTANCE}/
-    cat <<EOF > $CKAN_ETC/${INSTANCE}/install_settings.sh
-#!/bin/bash
-EOF
-    chmod +x $CKAN_ETC/${INSTANCE}/install_settings.sh
-fi
-
-# Parse the settings
-. $CKAN_ETC/${INSTANCE}/install_settings.sh
-
-# See which settings are set, and create any we need that aren't
-if [ "X${CKAN_DB_PASSWORD}" = "X" ] ; then
-    # Create a password
-    CKAN_DB_PASSWORD=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c10`
-    cat <<EOF >> $CKAN_ETC/${INSTANCE}/install_settings.sh
-CKAN_DB_PASSWORD=${CKAN_DB_PASSWORD}
-EOF
 fi
 
 error() { 
@@ -96,13 +77,13 @@ then
     /etc/init.d/postgresql start
     
     echo "Setting the password of the ${INSTANCE} user in PostgreSQL"
-    ckan_add_or_replace_database_user ${INSTANCE} ${CKAN_DB_PASSWORD}
+    ckan_add_or_replace_database_user ${INSTANCE} ${CKAN_DATABASE_PASSWORD}
 fi
 
 if ! [ -f $CKAN_ETC/${INSTANCE}/${INSTANCE}.ini ] ; then
     # Create the config file
     echo "Creating/overwriting the config for CKAN ... "
-    ckan_create_config_file ${INSTANCE} ${CKAN_DB_PASSWORD} ${LOCAL_DB}
+    ckan_create_config_file ${INSTANCE} ${CKAN_DATABASE_PASSWORD} ${LOCAL_DB}
     # Now that the file exists, make some customisations
     sed \
         -e "s,^\(ckan.dump_dir\)[ =].*,\1 = $CKAN_LIB/${INSTANCE}/static/dump," \
