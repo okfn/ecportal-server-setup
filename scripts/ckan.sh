@@ -309,7 +309,7 @@ EOF
       -e "s/\\\${CKAN_DOMAIN}/$CKAN_DOMAIN/g" \
       -e "s,\\\${CKAN_LIB},$CKAN_LIB,g" \
       -e "s/\\\${CKAN_INSTANCE}/$CKAN_INSTANCE/g" \
-      "$SCRIPTS_HOME/resources/ecodp.ini.tmpl" > "$INI_FILE"
+      "$SCRIPTS_HOME/../resources/ecodp.ini.tmpl" > "$INI_FILE"
 
   echo '------------------------------------------'
   echo 'Running internal analytics tracking command'
