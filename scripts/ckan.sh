@@ -374,7 +374,7 @@ EOF
 
   echo 'Restarting all services'
 
-  if [ $CKAN_BACKEND_SERVER == "0.0.0.0" ] || [ $CKAN_BACKEND_SERVER == "localhost" ]]
+  if [[ ( $CKAN_BACKEND_SERVER == "0.0.0.0" ) || ( $CKAN_BACKEND_SERVER == "localhost" ) ]]
   then
     $CKAN_APPLICATION/init.d/elasticsearch restart
     $CKAN_APPLICATION/init.d/postgresql restart
