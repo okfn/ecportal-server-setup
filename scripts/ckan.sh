@@ -309,6 +309,8 @@ EOF
       -e "s/\\\${CKAN_DOMAIN}/$CKAN_DOMAIN/g" \
       -e "s,\\\${CKAN_LIB},$CKAN_LIB,g" \
       -e "s/\\\${CKAN_INSTANCE}/$CKAN_INSTANCE/g" \
+      -e "s/\\\${CKAN_DATABASE_PASSWORD}/$CKAN_DATABASE_PASSWORD/g" \
+      -e "s/\\\${CKAN_BACKEND_SERVER}/$CKAN_BACKEND_SERVER/g" \
       "$SCRIPTS_HOME/../resources/ecodp.ini.tmpl" > "$INI_FILE"
 
   echo '------------------------------------------'

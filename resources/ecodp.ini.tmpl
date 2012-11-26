@@ -31,7 +31,7 @@ ckan.cache_enabled = true
 ckan.static_max_age = 86400
 
 ofs.impl = pairtree
-ofs.storage_dir = /applications/ecodp/users/ecodp/ckan/lib/ecodp/file-storage
+ofs.storage_dir = /applications/${CKAN_INSTANCE}/users/${CKAN_INSTANCE}/ckan/lib/${CKAN_INSTANCE}/file-storage
 
 ckan.root_path = /open-data/{{LANG}}/data
 ckan.tracking_enabled = true
@@ -42,7 +42,7 @@ qa.organisations = false
 
 use = egg:ckan
 full_stack = true
-cache_dir = /applications/ecodp/users/ecodp/ckan/lib/ecodp/data
+cache_dir = /applications/${CKAN_INSTANCE}/users/${CKAN_INSTANCE}/ckan/lib/${CKAN_INSTANCE}/data
 beaker.session.key = ckan
 beaker.session.secret = GoCh6YqF6ZI9UbBfWQAPxV0F2
 app_instance_uuid = {adf3dce9-e708-4ada-beee-e819f4d6bd22}
@@ -65,12 +65,12 @@ set debug = false
 # Specify the database for SQLAlchemy to use:
 # * Postgres is currently required for a production CKAN deployment
 # * Sqlite (memory or file) can be used as a quick alternative for testing
-sqlalchemy.url = postgresql://ecodp:SuperSecret@0.0.0.0/ecodp
+sqlalchemy.url = postgresql://${CKAN_INSTANCE}:${CKAN_DATABASE_PASSWORD}@${CKAN_BACKEND_SERVER}/${CKAN_INSTANCE}
 #sqlalchemy.url = sqlite:///
 #sqlalchemy.url = sqlite:///%(here)s/somedb.db
 
 # repoze.who config
-who.config_file = /applications/ecodp/users/ecodp/ckan/etc/ecodp/who.ini
+who.config_file = /applications/${CKAN_INSTANCE}/users/${CKAN_INSTANCE}/ckan/etc/${CKAN_INSTANCE}/who.ini
 who.log_level = warning
 who.log_file = %(cache_dir)s/who_log.ini
 
@@ -138,7 +138,7 @@ ckan.gravatar_default = identicon
 ckan.display_gravatars = no
 
 ## Solr support
-solr_url = http://0.0.0.0:8983/solr
+solr_url = http://${CKAN_BACKEND_SERVER}:8983/solr
 
 ## An 'id' for the site (using, for example, when creating entries in a common search index) 
 ## If not specified derived from the site_url
@@ -164,7 +164,7 @@ ckan.site_id = ecportal
 # Directory for logs (produced by cron scripts associated with ckan)
 ckan.log_dir = %(here)s/log
 # Directory for JSON/CSV dumps (must match setting in apache config)
-ckan.dump_dir = /applications/ecodp/users/ecodp/ckan/lib/ecodp/static/dump
+ckan.dump_dir = /applications/${CKAN_INSTANCE}/users/${CKAN_INSTANCE}/ckan/lib/${CKAN_INSTANCE}/static/dump
 # Directory for SQL database backups
 ckan.backup_dir = %(here)s/backup
 
@@ -266,7 +266,7 @@ formatter = generic
 class = logging.handlers.RotatingFileHandler
 formatter = generic
 level = NOTSET
-args = ("/var/log/ckan/ecodp/ecodp.log", "a", 20000000, 9)
+args = ("/var/log/ckan/${CKAN_INSTANCE}/${CKAN_INSTANCE}.log", "a", 20000000, 9)
 
 [formatter_generic]
 format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
