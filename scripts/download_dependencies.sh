@@ -15,7 +15,7 @@ download_dependencies () {
   cd ../downloads
 
   echo 'Downloading solr'
-  wget http://mirrors.ukfast.co.uk/sites/ftp.apache.org/lucene/solr/1.4.1/apache-solr-1.4.1.tgz
+  wget http://archive.apache.org/dist/lucene/solr/1.4.1/apache-solr-1.4.1.tgz
 
   echo 'Downloading EC ODP multilingual solr files'
   git clone https://github.com/okfn/ckanext-ecportal.git
