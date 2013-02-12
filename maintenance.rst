@@ -95,8 +95,8 @@ standard repositories.  As such the rpm is made available through nginx's own
 maintained repositories.  Once installed, it's configuration files are linked
 to from `$NGINX_PRODUCT/etc`.
 
-Nginx is set up to forward `/open-data/` urls to apache.  And to proxy
-`/open-data/elastic/` urls to elasticsearch.
+Nginx is set up to forward `/` urls to apache.  And to proxy
+`/elastic/` urls to elasticsearch.
 
 Nginx's master process is running under ``root``.  This appears to be standard
 in order that nginx can open privelaged ports without having to "tinker" with
@@ -350,7 +350,7 @@ CKAN URL TESTS
 ================
 
 The following in ckan urls should be tested to see if they are
-working.  These should be off /open-data/data
+working.  These should be off /data
 
 /
 /dataset

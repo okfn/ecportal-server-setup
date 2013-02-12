@@ -78,7 +78,6 @@ ckan_create_who_ini () {
         if ! [ -f $CKAN_ETC/${INSTANCE}/who.ini ] ; then
             cp -n $PYENV/src/ckan/ckan/config/who.ini $CKAN_ETC/${INSTANCE}/who.ini
             sed -e "s,%(here)s,$CKAN_LIB/${INSTANCE}," \
-		-e 's,^logged_out_url = /user/logged_out,logged_out_url = /open-data/data/user/logged_out,' \
                 -e "s/^secret = somesecret/secret = $AUTH_TKT_SECRET/" \
                 -i $CKAN_ETC/${INSTANCE}/who.ini
 
@@ -179,28 +178,28 @@ ckan_create_wsgi_handler () {
         if [ ! -f "$CKAN_LIB/${INSTANCE}/wsgi.py" ]
         then
             cat <<- EOF > $CKAN_LIB/${INSTANCE}/packaging_version.txt
-				1.7
-			EOF
+                1.7
+            EOF
             cat <<- EOF > $CKAN_LIB/${INSTANCE}/wsgi.py
-				import os
-				instance_dir = '$CKAN_LIB/${INSTANCE}'
-				config_dir = '$CKAN_ETC/${INSTANCE}'
-				config_file = '${INSTANCE}.ini'
-				pyenv_bin_dir = os.path.join(instance_dir, 'pyenv', 'bin')
-				activate_this = os.path.join(pyenv_bin_dir, 'activate_this.py')
-				execfile(activate_this, dict(__file__=activate_this))
-				# this is werid but without importing ckanext first import of paste.deploy will fail
-				#import ckanext
-				config_filepath = os.path.join(config_dir, config_file)
-				if not os.path.exists(config_filepath):
-				    raise Exception('No such file %r'%config_filepath)
-				from paste.deploy import loadapp
-				from paste.script.util.logging_config import fileConfig
-				fileConfig(config_filepath)
-				application = loadapp('config:%s' % config_filepath)
-				from apachemiddleware import MaintenanceResponse
-				application = MaintenanceResponse(application)
-			EOF
+                import os
+                instance_dir = '$CKAN_LIB/${INSTANCE}'
+                config_dir = '$CKAN_ETC/${INSTANCE}'
+                config_file = '${INSTANCE}.ini'
+                pyenv_bin_dir = os.path.join(instance_dir, 'pyenv', 'bin')
+                activate_this = os.path.join(pyenv_bin_dir, 'activate_this.py')
+                execfile(activate_this, dict(__file__=activate_this))
+                # this is werid but without importing ckanext first import of paste.deploy will fail
+                #import ckanext
+                config_filepath = os.path.join(config_dir, config_file)
+                if not os.path.exists(config_filepath):
+                    raise Exception('No such file %r'%config_filepath)
+                from paste.deploy import loadapp
+                from paste.script.util.logging_config import fileConfig
+                fileConfig(config_filepath)
+                application = loadapp('config:%s' % config_filepath)
+                from apachemiddleware import MaintenanceResponse
+                application = MaintenanceResponse(application)
+            EOF
         chmod +x $CKAN_LIB/${INSTANCE}/wsgi.py
         fi
    fi
@@ -227,107 +226,84 @@ ckan_overwrite_apache_config () {
         echo "Creating httpd configuration file for instance ${INSTANCE}"
         cat <<- EOF > /etc/httpd/conf.d/${INSTANCE}.conf
 
-			<VirtualHost *:8008>
-			
-			    DocumentRoot ${CKAN_APPLICATION}/www/drupal
-			    ServerName ${ServerName}
-			    ServerAlias ${ServerName} localhost
-			    DirectoryIndex index.phtml index.html index.php index.htm
-			
-          ## Re-write urls with a 2 character locale to a form supported by CKAN.
-          ## ECODP locale urls are of the form: <domain>/open-data/??/data/<rest of url>
-          ## Whereas CKAN requires:             <domain>/open-data/data/??/<rest of url>
-          ##
-          ## This is because CKAN is mounted at /open-data/data, so the locale must come
-          ## after the mount point in order that CKAN can see it.
-			    RewriteEngine on
-			    RewriteRule ^/open-data/(..)/data($|/(.*))$ /open-data/data/\$1/\$3 [L,QSA,PT]
-			
-			#    <Directory />
-			#        Options Indexes FollowSymLinks MultiViews
-			#        AllowOverride All
-			#        Order allow,deny
-			#        Allow from all
-			#    </Directory>
-			
-			#    <Directory /home/$CKAN_USER/ecportal/>
-			#       allow from all
-			#       AuthType Basic
-			#       AuthName "CKAN"
-			#       AuthBasicProvider wsgi
-			#       WSGIAuthUserScript /home/$CKAN_USER/ecportal/auth.py
-			#       Require valid-user 
-			#    </Directory>
-			
-			
-          # Open up the action and data apis as they are required
-          # for the ckanext-qa and ckanext-datastorer extensions,
-          # both of which don't allow access to resources requiring
-          # authentication.
-          <Location /open-data/data/api/action>
-            allow from all
-            Order allow,deny
-            Satisfy Any
-          </Location>
+            <VirtualHost *:8008>
 
-          <Location /open-data/data/api/data>
-            allow from all
-            Order allow,deny
-            Satisfy Any
-          </Location>
-			
-			    # this is CKAN app
-			    WSGIScriptAlias /open-data/data $CKAN_LIB/${INSTANCE}/wsgi.py
-			    WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=4 threads=15 maximum-requests=2000
-			    WSGIProcessGroup ${INSTANCE}
-			
-			    # pass authorization info on (needed for rest api)
-			    WSGIPassAuthorization On
-			
-			    # Added by 10F
-			    <Directory ${CKAN_APPLICATION}/www/drupal>
-			        Options Indexes FollowSymLinks MultiViews
-			        AllowOverride All
-			        Order allow,deny
-			        allow from all
-			    </Directory>
+                DocumentRoot ${CKAN_APPLICATION}/www/drupal
+                ServerName ${ServerName}
+                ServerAlias ${ServerName} localhost
+                DirectoryIndex index.phtml index.html index.php index.htm
 
-			    <Directory ${CKAN_APPLICATION}/www/uploads>
-			        Options Indexes FollowSymLinks MultiViews
-			        IndexOptions SuppressIcon
-			        AllowOverride All
-			        Order allow,deny
-			        allow from all
-			    </Directory>
-					
-					Alias /open-data/data/uploads ${CKAN_APPLICATION}/www/uploads
+                ## Re-write urls with a 2 character locale to a form supported by CKAN.
+                ## ECODP locale urls are of the form: <domain>/??/data/<rest of url>
+                ## Whereas CKAN requires:             <domain>/data/??/<rest of url>
+                ##
+                ## This is because CKAN is mounted at /data, so the locale must come
+                ## after the mount point in order that CKAN can see it.
+                RewriteEngine on
+                RewriteRule ^/(..)/data($|/(.*))$ /data/\$1/\$3 [L,QSA,PT]
 
-			#    Alias /open-data /var/www/drupal
-			
-			    # Added by InfAI
-			    <Directory ${CKAN_APPLICATION}/www/cubeviz>
-			        Options Indexes FollowSymLinks MultiViews
-			        AllowOverride All
-			        Order allow,deny
-			        Allow from all
-			    </Directory>
-			    Alias /open-data/apps/cubeviz ${CKAN_APPLICATION}/www/cubeviz
-			    Alias /open-data/apps/semmap ${CKAN_APPLICATION}/www/semmap
+                # Open up the action and data apis as they are required
+                # for the ckanext-qa and ckanext-datastorer extensions,
+                # both of which don't allow access to resources requiring
+                # authentication.
+                <Location /data/api/action>
+                    allow from all
+                    Order allow,deny
+                    Satisfy Any
+                </Location>
 
-					<Proxy *>
-						Order allow,deny
-						allow from all
-					</Proxy>
+                <Location /data/api/data>
+                    allow from all
+                    Order allow,deny
+                    Satisfy Any
+                </Location>
 
-					# Virtuoso endpoint
-					## ProxyPass /open-data/sparql http://localhost:8890/sparql retry=0
-					## ProxyPassReverse /open-data/sparql http://localhost:8890/sparql
-		
-			    ErrorLog /var/log/httpd/${INSTANCE}.error.log
-			    CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
-			
-			</VirtualHost>
+                # this is CKAN app
+                WSGIScriptAlias /data $CKAN_LIB/${INSTANCE}/wsgi.py
+                WSGIDaemonProcess ${INSTANCE} display-name=${INSTANCE} processes=4 threads=15 maximum-requests=2000
+                WSGIProcessGroup ${INSTANCE}
 
-		EOF
+                # pass authorization info on (needed for rest api)
+                WSGIPassAuthorization On
+
+                # Added by 10F
+                <Directory ${CKAN_APPLICATION}/www/drupal>
+                    Options Indexes FollowSymLinks MultiViews
+                    AllowOverride All
+                    Order allow,deny
+                    allow from all
+                </Directory>
+
+                <Directory ${CKAN_APPLICATION}/www/uploads>
+                    Options Indexes FollowSymLinks MultiViews
+                    IndexOptions SuppressIcon
+                    AllowOverride All
+                    Order allow,deny
+                    allow from all
+                </Directory>
+
+                Alias /data/uploads ${CKAN_APPLICATION}/www/uploads
+
+                # Added by InfAI
+                <Directory ${CKAN_APPLICATION}/www/cubeviz>
+                    Options Indexes FollowSymLinks MultiViews
+                    AllowOverride All
+                    Order allow,deny
+                    Allow from all
+                </Directory>
+                Alias /apps/cubeviz ${CKAN_APPLICATION}/www/cubeviz
+                Alias /apps/semmap ${CKAN_APPLICATION}/www/semmap
+
+                <Proxy *>
+                    Order allow,deny
+                    allow from all
+                </Proxy>
+
+                ErrorLog /var/log/httpd/${INSTANCE}.error.log
+                CustomLog /var/log/httpd/${INSTANCE}.custom.log combined
+
+            </VirtualHost>
+
+        EOF
     fi
 }

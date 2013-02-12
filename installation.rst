@@ -129,10 +129,10 @@ Checking that CKAN is installed
 ===============================
 
 Your CKAN instance should now be available at
-http://localhost/open-data/data/
+http://localhost/data/
 
 To verify, go to this address in your browser or from the command line, run::
 
-    curl --user <http auth user name>:<http auth password> http://localhost/open-data/data/
+    curl --user <http auth user name>:<http auth password> http://localhost/data/
 
 The CKAN homepage should be displayed.

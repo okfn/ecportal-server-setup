@@ -126,14 +126,14 @@ server {
   server_name $CKAN_DOMAIN;
   access_log /var/log/nginx/$CKAN_DOMAIN.access.log main;
 
-  location /open-data/elastic/ {
+  location /elastic/ {
     internal;
     proxy_pass http://${CKAN_BACKEND_SERVER}:9200/;
     proxy_set_header Host \$host;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
   }
 
-  location /open-data/data {
+  location /data {
      proxy_pass http://0.0.0.0:8008;
      proxy_set_header Host \$host:80;
      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -146,7 +146,7 @@ server {
      proxy_ignore_headers "Cache-Control";
   }
 
-  location ~ /open-data/[a-zA-z][a-zA-z]/data/.* {
+  location ~ /[a-zA-z][a-zA-z]/data/.* {
 
      proxy_pass http://0.0.0.0:8008;
      proxy_set_header Host \$host:80;
@@ -160,7 +160,7 @@ server {
      proxy_ignore_headers "Cache-Control";
   }
 
-  location /open-data/ {
+  location / {
      proxy_pass http://0.0.0.0:8008;
      proxy_set_header Host \$host:80;
      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
