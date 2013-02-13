@@ -25,7 +25,7 @@ download_dependencies () {
   rm -rf ckanext-ecportal
 
   echo 'Downloading elastic search'
-  wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.4.tar.gz
+  wget http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.19.4.tar.gz
 
   cd ../rpms
   echo 'Downloading nginx rpm'
